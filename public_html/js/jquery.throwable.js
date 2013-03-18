@@ -32,7 +32,7 @@
     (function ($, window,document, undefined) {
         
         	var stage = [ window.screenX, window.screenY, window.innerWidth, window.innerHeight ];
-			getBrowserDimensions();
+			//getBrowserDimensions();
 
 			var isRunning = false;
 			var isMouseDown = false;
@@ -59,17 +59,18 @@
         
         $.fn.throwable = function (options) {
             if ($.isFunction(this.each)) {
-                init();
                 return this.each(function () {
                     if ($(this).data('throwable.instance') === undefined) {
                         $(this).data('throwable.instance', new $.fn.throwable());
-                        $(this).data('throwable.instance').init(options,this);
+                        $(this).data('throwable.instance').init();
+                        $(this).data('throwable.instance').myinit(options,this);
                     }
                 });
             }
         };
  
         $.extend($.fn.throwable.prototype, {
+            _this:null,
             defaults: {
                 infinitX:false,
                 rotate:"none"
@@ -77,32 +78,32 @@
             /**
             * init the plugin
             */
-            init: function (o, elem) {
+            myinit: function (o, elem) {
                 this.defaults = $.extend({}, this.defaults, o);
                 console.log(this.defaults);
-                
+                 _this=this;
 				
  
-            }
-          });
+            },
+         
     
  
 			// init function
 
-			function init() {
+			init: function(){
 
-				$(document).on( 'mousedown', onDocumentMouseDown);
-				$(document).on( 'mouseup', onDocumentMouseUp );
-				$(document).on( 'mousemove', onDocumentMouseMove );
+				$(document).on( 'mousedown', this.onDocumentMouseDown);
+				$(document).on( 'mouseup', this.onDocumentMouseUp );
+				$(document).on( 'mousemove', this.onDocumentMouseMove );
 
 				//document.addEventListener( 'keyup', onDocumentKeyUp, false );
 
 
-				$(document).on( 'touchstart', onDocumentTouchStart );
-				$(document).on( 'touchmove', onDocumentTouchMove );
-				$(document).on( 'touchend', onDocumentTouchEnd );
+				$(document).on( 'touchstart', this.onDocumentTouchStart );
+				$(document).on( 'touchmove', this.onDocumentTouchMove );
+				$(document).on( 'touchend', this.onDocumentTouchEnd );
 
-				$(window).on( 'deviceorientation', onWindowDeviceOrientation, false );
+				$(window).on( 'deviceorientation', this.onWindowDeviceOrientation, false );
 
 				// init box2d
 
@@ -113,14 +114,14 @@
 				world = new b2World( worldAABB, new b2Vec2( 0, 0 ), true );
 
 				// walls
-				setWalls();
+				this.setWalls();
                                 // Get box2d elements
 
 				elements = $(".box2d");
 
 				for ( var i = 0; i < elements.length; i ++ ) {
 
-					properties[i] =  getElementProperties( elements[i] );
+					properties[i] =  this.getElementProperties( elements[i] );
 
 				}
 
@@ -135,10 +136,10 @@
 					element.style.left = properties[i].X + 'px';
 					element.style.top = properties[i].Y+ 'px';
 					element.style.width = properties[i].Width + 'px';
-					element.addEventListener( 'mousedown', onElementMouseDown, false );
-					element.addEventListener( 'mouseup', onElementMouseUp, false );
+					element.addEventListener( 'mousedown', this.onElementMouseDown, false );
+					element.addEventListener( 'mouseup', this.onElementMouseUp, false );
 
-					bodies[i] = createBox( world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height()>> 1), $elem.width() / 2, $elem.height() / 2, false );
+					bodies[i] = this.createBox( world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height()>> 1), $elem.width() / 2, $elem.height() / 2, false );
 
 					// Clean position dependencies
 
@@ -151,50 +152,51 @@
 
 				}
 
-			}
+			},
 
-			function run() {
+			 run : function() {
 
 				isRunning = true;
-				setInterval( loop, 25 );
+				setInterval( function(){
+                                    _this.loop(); }, 25 );
 
-			}
+			},
 
-			function onDocumentMouseDown( event ) {
+			onDocumentMouseDown:function( event ) {
 
 				isMouseDown = true;
 
-			}
+			},
 
-			function onDocumentMouseUp( event ) {
+			 onDocumentMouseUp:function( event ) {
 
 				isMouseDown = false;
 
-			}
+			},
 
-			function onDocumentMouseMove( event ) {
+			 onDocumentMouseMove : function( event ) {
 
-				if ( !isRunning ) run();
+				if ( !isRunning ) _this.run();
 
 				mouse.x = event.clientX;
 				mouse.y = event.clientY;
 
-			}
+			},
 
-			function onDocumentTouchStart( event ) {
+			 onDocumentTouchStart:function( event ) {
 
 				if ( event.touches.length == 1 ) {
 
 					if ( !isRunning ) {
-						run();
+						_this.run();
 					}
 					mouse.x = event.touches[0].pageX;
 					mouse.y = event.touches[0].pageY;
 					isMouseDown = true;
 				}
-			}
+			},
 
-			function onDocumentTouchMove( event ) {
+			 onDocumentTouchMove:function( event ) {
 
 				if ( event.touches.length == 1 ) {
 					event.preventDefault();
@@ -202,39 +204,39 @@
 					mouse.y = event.touches[0].pageY;
 				}
 
-			}
+			},
 
-			function onDocumentTouchEnd( event ) {
+                         onDocumentTouchEnd:function( event ) {
 
 				if ( event.touches.length == 0 ) {
 
 					isMouseDown = false;
 				}
-			}
+			},
 
-			function onWindowDeviceOrientation( event ) {
+			 onWindowDeviceOrientation:function( event ) {
 				if ( event.beta ) {
 					gravity.x = Math.sin( event.gamma * Math.PI / 180 );
 					gravity.y = Math.sin( ( Math.PI / 4 ) + event.beta * Math.PI / 180 );
 				}
-			}
+			},
 
 			//
 
-			function onElementMouseDown( event ) {
+			 onElementMouseDown:function( event ) {
 				event.preventDefault();
 				mouseOnClick[0] = event.clientX;
 				mouseOnClick[1] = event.clientY;
-			}
+			},
 
-			function onElementMouseUp( event ) {
+                     onElementMouseUp:function( event ) {
 				event.preventDefault();
-			}
+			},
 
-			function loop() {
+			loop: function() {
 
-				if (getBrowserDimensions())
-					setWalls();
+				if (_this.getBrowserDimensions())
+					_this.setWalls();
 
 				delta[0] += (0 - delta[0]) * .5;
 				delta[1] += (0 - delta[1]) * .5;
@@ -242,7 +244,7 @@
 				world.m_gravity.x = gravity.x * 350 + delta[0];
 				world.m_gravity.y = gravity.y * 350 + delta[1];
 
-				mouseDrag();
+				this.mouseDrag();
 				world.Step(timeStep, iterations);
 
 				for ( i = 0; i < elements.length; i++ ) {
@@ -261,11 +263,11 @@
 					element.style.OTransform = style;
 					element.style.msTransform = style;
 				}
-			}
+			},
 
 			// .. BOX2D UTILS
 
-			function createBox(world, x, y, width, height, fixed, element) {
+			 createBox:function(world, x, y, width, height, fixed, element) {
 
 				if (typeof(fixed) === 'undefined')
 					fixed = true;
@@ -283,13 +285,13 @@
 				boxBd.userData = {element: element};
 
 				return world.CreateBody(boxBd);
-			}
+			},
 
-			function mouseDrag() {
+			 mouseDrag:function() {
 				// mouse press
 				if (isMouseDown && !mouseJoint) {
 
-					var body = getBodyAtMouse();
+					var body = this.getBodyAtMouse();
 
 					if (body) {
 
@@ -320,9 +322,9 @@
 					var p2 = new b2Vec2(mouse.x, mouse.y);
 					mouseJoint.SetTarget(p2);
 				}
-			}
+			},
 
-			function getBodyAtMouse() {
+			 getBodyAtMouse:function() {
 
 				// Make a small box.
 				var mousePVec = new b2Vec2();
@@ -351,9 +353,9 @@
 				}
 
 				return body;
-			}
+			},
 
-			function setWalls() {
+			setWalls: function() {
 
 				if (wallsSetted) {
 
@@ -368,19 +370,19 @@
 					walls[3] = null;
 				}
 
-				walls[0] = createBox(world, stage[2] / 2, - wall_thickness, stage[2], wall_thickness);
-				walls[1] = createBox(world, stage[2] / 2, stage[3] + wall_thickness, stage[2], wall_thickness);
-				walls[2] = createBox(world, - wall_thickness, stage[3] / 2, wall_thickness, stage[3]);
-				walls[3] = createBox(world, stage[2] + wall_thickness, stage[3] / 2, wall_thickness, stage[3]);	
+				walls[0] = this.createBox(world, stage[2] / 2, - wall_thickness, stage[2], wall_thickness);
+				walls[1] = this.createBox(world, stage[2] / 2, stage[3] + wall_thickness, stage[2], wall_thickness);
+				walls[2] = this.createBox(world, - wall_thickness, stage[3] / 2, wall_thickness, stage[3]);
+				walls[3] = this.createBox(world, stage[2] + wall_thickness, stage[3] / 2, wall_thickness, stage[3]);	
 
 				wallsSetted = true;
 
-			}
+			},
 
 			// .. UTILS
 
 
-			function getElementProperties( element ) {
+			 getElementProperties:function( element ) {
 
 				var x = 0;
 				var y = 0;
@@ -395,9 +397,9 @@
 				} while ( element = element.offsetParent );
 
 				return { X:x, Y:y, Width:width, Height:height };
-			}
+			},
 
-			function getBrowserDimensions() {
+			 getBrowserDimensions: function() {
 
 				var changed = false;
 
@@ -430,5 +432,5 @@
 				return changed;
 			}
 
-
+ });
 })(jQuery, window, document);
