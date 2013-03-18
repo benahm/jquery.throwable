@@ -55,7 +55,7 @@ var delta = [0, 0];
     var bodies = [];
     var properties = [];
 
-    var gravity = {x: 0, y: 1};
+
 
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
@@ -75,7 +75,7 @@ var delta = [0, 0];
         _this: null,
         defaults: {
             infinitX: false,
-            rotate: "none"
+            gravity:{x: 0, y: 1}
         },
         /**
          * init the plugin
@@ -83,6 +83,37 @@ var delta = [0, 0];
         myinit: function(o, elem) {
             this.defaults = $.extend({}, this.defaults, o);
             console.log(this.defaults);
+                // Get box2d elements
+                var property=this.getElementProperties(elem);
+                properties.push(property);
+
+                var element = elem;
+                var $elem = $(element);
+                $elem.css({
+                    "position": "absolute",
+                    "left":property.X + 'px',
+                    "top" : property.Y + 'px',
+                    "width": property.Width + 'px'
+                });
+               /*element.style.position = 'absolute';
+                element.style.left = property.X + 'px';
+                element.style.top = property.Y + 'px';
+                element.style.width = property.Width + 'px';*/
+                $(element).on('mousedown', this.onElementMouseDown);
+                $(element).on('mouseup', this.onElementMouseUp);
+
+                bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false));
+
+                // Clean position dependencies
+
+                while (element.offsetParent) {
+
+                    element = element.offsetParent;
+                    element.style.position = 'static';
+
+                }
+                elements.push(elem);
+                console.log(properties);
 
         },
         // init function
@@ -93,7 +124,6 @@ var delta = [0, 0];
             $(document).on('mouseup', this.onDocumentMouseUp);
             $(document).on('mousemove', this.onDocumentMouseMove);
 
-            //document.addEventListener( 'keyup', onDocumentKeyUp, false );
 
 
             $(document).on('touchstart', this.onDocumentTouchStart);
@@ -112,43 +142,37 @@ var delta = [0, 0];
 
             // walls
             this.setWalls();
-            // Get box2d elements
+        },
+        loop: function() {
 
-            elements = $(".box2d");
+            if (_this.getBrowserDimensions())
+                _this.setWalls();
 
-            for (var i = 0; i < elements.length; i++) {
+            delta[0] += (0 - delta[0]) * .5;
+            delta[1] += (0 - delta[1]) * .5;
 
-                properties[i] = this.getElementProperties(elements[i]);
+            world.m_gravity.x = this.defaults.gravity.x * 350 + delta[0];
+            world.m_gravity.y = this.defaults.gravity.y * 350 + delta[1];
 
+            this.mouseDrag();
+            world.Step(timeStep, iterations);
+
+            for (i = 0; i < elements.length; i++) {
+
+                var body = bodies[i];
+                var element = elements[i];
+
+                element.style.left = (body.m_position0.x - (properties[i].Width >> 1)) + 'px';
+                element.style.top = (body.m_position0.y - (properties[i].Height >> 1)) + 'px';
+
+                var style = 'rotate(' + (body.m_rotation0 * 57.2957795) + 'deg)';
+
+                element.style.transform = style;
+                element.style.WebkitTransform = style + ' translateZ(0)'; // Force HW Acceleration
+                element.style.MozTransform = style;
+                element.style.OTransform = style;
+                element.style.msTransform = style;
             }
-
-            for (var i = 0; i < elements.length; i++) {
-
-                var element = elements[ i ];
-                var $elem = $(element);
-                $elem.css({
-                    "position": "absolute"
-                });
-                element.style.position = 'absolute';
-                element.style.left = properties[i].X + 'px';
-                element.style.top = properties[i].Y + 'px';
-                element.style.width = properties[i].Width + 'px';
-                element.addEventListener('mousedown', this.onElementMouseDown, false);
-                element.addEventListener('mouseup', this.onElementMouseUp, false);
-
-                bodies[i] = this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false);
-
-                // Clean position dependencies
-
-                while (element.offsetParent) {
-
-                    element = element.offsetParent;
-                    element.style.position = 'static';
-
-                }
-
-            }
-
         },
         run: function() {
 
@@ -207,8 +231,8 @@ var delta = [0, 0];
         },
         onWindowDeviceOrientation: function(event) {
             if (event.beta) {
-                gravity.x = Math.sin(event.gamma * Math.PI / 180);
-                gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
+                this.defaults.gravity.x = Math.sin(event.gamma * Math.PI / 180);
+                this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
             }
         },
         //
@@ -220,37 +244,6 @@ var delta = [0, 0];
         },
         onElementMouseUp: function(event) {
             event.preventDefault();
-        },
-        loop: function() {
-
-            if (_this.getBrowserDimensions())
-                _this.setWalls();
-
-            delta[0] += (0 - delta[0]) * .5;
-            delta[1] += (0 - delta[1]) * .5;
-
-            world.m_gravity.x = gravity.x * 350 + delta[0];
-            world.m_gravity.y = gravity.y * 350 + delta[1];
-
-            this.mouseDrag();
-            world.Step(timeStep, iterations);
-
-            for (i = 0; i < elements.length; i++) {
-
-                var body = bodies[i];
-                var element = elements[i];
-
-                element.style.left = (body.m_position0.x - (properties[i].Width >> 1)) + 'px';
-                element.style.top = (body.m_position0.y - (properties[i].Height >> 1)) + 'px';
-
-                var style = 'rotate(' + (body.m_rotation0 * 57.2957795) + 'deg)';
-
-                element.style.transform = style;
-                element.style.WebkitTransform = style + ' translateZ(0)'; // Force HW Acceleration
-                element.style.MozTransform = style;
-                element.style.OTransform = style;
-                element.style.msTransform = style;
-            }
         },
         // .. BOX2D UTILS
 
@@ -371,9 +364,7 @@ var delta = [0, 0];
             var y = 0;
             var width = element.offsetWidth;
             var height = element.offsetHeight;
-
             do {
-
                 x += element.offsetLeft;
                 y += element.offsetTop;
 
