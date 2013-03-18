@@ -83,14 +83,12 @@ var delta = [0, 0];
         myinit: function(o, elem) {
             this.defaults = $.extend({}, this.defaults, o);
             console.log(this.defaults);
-            
-
 
         },
         // init function
 
         init: function() {
-            alert("hi");
+            _this=this;
             $(document).on('mousedown', this.onDocumentMouseDown);
             $(document).on('mouseup', this.onDocumentMouseUp);
             $(document).on('mousemove', this.onDocumentMouseMove);
