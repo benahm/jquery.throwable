@@ -3,158 +3,7 @@
  * JQuery plugin 
  */
     /* Based on Alex Arnell's inheritance implementation. */
-			var Class = {
-			  create: function() {
-			    var parent = null, properties = $A(arguments);
-			    if ($.isFunction(properties[0]))
-			      parent = properties.shift();
-
-			    function klass() {
-			      this.initialize.apply(this, arguments);
-			    }
-
-			    Object.extend(klass, Class.Methods);
-			    klass.superclass = parent;
-			    klass.subclasses = [];
-
-			    if (parent) {
-			      var subclass = function() { };
-			      subclass.prototype = parent.prototype;
-			      klass.prototype = new subclass;
-			      parent.subclasses.push(klass);
-			    }
-
-			    for (var i = 0; i < properties.length; i++)
-			      klass.addMethods(properties[i]);
-
-			    if (!klass.prototype.initialize)
-			      klass.prototype.initialize = this.emptyFunction;
-
-			    klass.prototype.constructor = klass;
-
-			    return klass;
-			  },
-			  emptyFunction:function () {},
-
-			};
-
-			Class.Methods = {
-			  addMethods: function(source) {
-			    var ancestor   = this.superclass && this.superclass.prototype;
-			    var properties = Object.keys(source);
-
-			    if (!Object.keys({ toString: true }).length)
-			      properties.push("toString", "valueOf");
-
-			    for (var i = 0, length = properties.length; i < length; i++) {
-			      var property = properties[i], value = source[property];
-			      if (ancestor && $.isFunction(value) &&
-				  value.argumentNames().first() == "$super") {
-				var method = value, value = Object.extend((function(m) {
-				  return function() { return ancestor[m].apply(this, arguments) };
-				})(property).wrap(method), {
-				  valueOf:  function() { return method },
-				  toString: function() { return method.toString() }
-				});
-			      }
-			      this.prototype[property] = value;
-			    }
-
-			    return this;
-			  }
-			};
-
-			Object.extend = function(destination, source) {
-			  for (var property in source)
-			    destination[property] = source[property];
-			  return destination;
-			};
-
-			Object.extend(Object, {
-			  inspect: function(object) {
-			    try {
-			      if (Object.isUndefined(object)) return 'undefined';
-			      if (object === null) return 'null';
-			      return object.inspect ? object.inspect() : String(object);
-			    } catch (e) {
-			      if (e instanceof RangeError) return '...';
-			      throw e;
-			    }
-			  },
-
-			  toJSON: function(object) {
-			    var type = typeof object;
-			    switch (type) {
-			      case 'undefined':
-			      case 'function':
-			      case 'unknown': return;
-			      case 'boolean': return object.toString();
-			    }
-
-			    if (object === null) return 'null';
-			    if (object.toJSON) return object.toJSON();
-			    if (Object.isElement(object)) return;
-
-			    var results = [];
-			    for (var property in object) {
-			      var value = Object.toJSON(object[property]);
-			      if (!Object.isUndefined(value))
-				results.push(property.toJSON() + ': ' + value);
-			    }
-
-			    return '{' + results.join(', ') + '}';
-			  },
-
-			  toQueryString: function(object) {
-			    return $H(object).toQueryString();
-			  },
-
-			  toHTML: function(object) {
-			    return object && object.toHTML ? object.toHTML() : String.interpret(object);
-			  },
-
-			  keys: function(object) {
-			    var keys = [];
-			    for (var property in object)
-			      keys.push(property);
-			    return keys;
-			  },
-
-			  values: function(object) {
-			    var values = [];
-			    for (var property in object)
-			      values.push(object[property]);
-			    return values;
-			  },
-
-			  clone: function(object) {
-			    return Object.extend({ }, object);
-			  },
-
-			  isElement: function(object) {
-			    return object && object.nodeType == 1;
-			  },
-
-			  isHash: function(object) {
-			    return object instanceof Hash;
-			  },
-
-			  isString: function(object) {
-			    return typeof object == "string";
-			  },
-
-			  isUndefined: function(object) {
-			    return typeof object == "undefined";
-			  }
-			});
-
-			function $A(iterable) {
-			  if (!iterable) return [];
-			  if (iterable.toArray) return iterable.toArray();
-			  var length = iterable.length || 0, results = new Array(length);
-			  while (length--) results[length] = iterable[length];
-			  return results;
-			}
+              function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,n=new Array(t);while(t--)n[t]=e[t];return n}var Class={create:function(){function n(){this.initialize.apply(this,arguments)}var e=null,t=$A(arguments);if($.isFunction(t[0]))e=t.shift();Object.extend(n,Class.Methods);n.superclass=e;n.subclasses=[];if(e){var r=function(){};r.prototype=e.prototype;n.prototype=new r;e.subclasses.push(n)}for(var i=0;i<t.length;i++)n.addMethods(t[i]);if(!n.prototype.initialize)n.prototype.initialize=this.emptyFunction;n.prototype.constructor=n;return n},emptyFunction:function(){}};Class.Methods={addMethods:function(e){var t=this.superclass&&this.superclass.prototype;var n=Object.keys(e);if(!Object.keys({toString:true}).length)n.push("toString","valueOf");for(var r=0,i=n.length;r<i;r++){var s=n[r],o=e[s];if(t&&$.isFunction(o)&&o.argumentNames().first()=="$super"){var u=o,o=Object.extend(function(e){return function(){return t[e].apply(this,arguments)}}(s).wrap(u),{valueOf:function(){return u},toString:function(){return u.toString()}})}this.prototype[s]=o}return this}};Object.extend=function(e,t){for(var n in t)e[n]=t[n];return e};Object.extend(Object,{inspect:function(e){try{if(Object.isUndefined(e))return"undefined";if(e===null)return"null";return e.inspect?e.inspect():String(e)}catch(t){if(t instanceof RangeError)return"...";throw t}},toJSON:function(e){var t=typeof e;switch(t){case"undefined":case"function":case"unknown":return;case"boolean":return e.toString()}if(e===null)return"null";if(e.toJSON)return e.toJSON();if(Object.isElement(e))return;var n=[];for(var r in e){var i=Object.toJSON(e[r]);if(!Object.isUndefined(i))n.push(r.toJSON()+": "+i)}return"{"+n.join(", ")+"}"},toQueryString:function(e){return $H(e).toQueryString()},toHTML:function(e){return e&&e.toHTML?e.toHTML():String.interpret(e)},keys:function(e){var t=[];for(var n in e)t.push(n);return t},values:function(e){var t=[];for(var n in e)t.push(e[n]);return t},clone:function(e){return Object.extend({},e)},isElement:function(e){return e&&e.nodeType==1},isHash:function(e){return e instanceof Hash},isString:function(e){return typeof e=="string"},isUndefined:function(e){return typeof e=="undefined"}})
 
 			if (WebKit = navigator.userAgent.indexOf('AppleWebKit/index.html') > -1) {
 			  $A = function(iterable) {
@@ -178,7 +27,11 @@
                 
 
 			var delta = [ 0, 0 ];
-			var stage = [ window.screenX, window.screenY, window.innerWidth, window.innerHeight ];
+		
+
+    (function ($, window,document, undefined) {
+        
+        	var stage = [ window.screenX, window.screenY, window.innerWidth, window.innerHeight ];
 			getBrowserDimensions();
 
 			var isRunning = false;
@@ -203,8 +56,6 @@
 			var properties = [];
 
 			var gravity = { x: 0, y: 1 };
-
-    (function ($, window,document, undefined) {
         
         $.fn.throwable = function (options) {
             if ($.isFunction(this.each)) {
@@ -234,7 +85,7 @@
  
             }
           });
-    })(jQuery, window, document);
+    
  
 			// init function
 
@@ -431,7 +282,7 @@
 				boxBd.position.Set(x,y);
 				boxBd.userData = {element: element};
 
-				return world.CreateBody(boxBd)
+				return world.CreateBody(boxBd);
 			}
 
 			function mouseDrag() {
@@ -489,7 +340,7 @@
 
 				for ( var i = 0; i < count; i ++ ) {
 
-					if (shapes[i].m_body.IsStatic() == false) {
+					if (shapes[i].m_body.IsStatic() === false) {
 
 						if ( shapes[i].TestPoint(mousePVec) ) {
 
@@ -550,27 +401,27 @@
 
 				var changed = false;
 
-				if ( stage[0] != window.screenX ) {
+				if ( stage[0] !== window.screenX ) {
 
 					delta[0] = (window.screenX - stage[0]) * 50;
 					stage[0] = window.screenX;
 					changed = true;
 				}
 
-				if ( stage[1] != window.screenY ) {
+				if ( stage[1] !== window.screenY ) {
 
 					delta[1] = (window.screenY - stage[1]) * 50;
 					stage[1] = window.screenY;
 					changed = true;
 				}
 
-				if ( stage[2] != window.innerWidth ) {
+				if ( stage[2] !== window.innerWidth ) {
 
 					stage[2] = window.innerWidth;
 					changed = true;
 				}
 
-				if ( stage[3] != window.innerHeight ) {
+				if ( stage[3] !== window.innerHeight ) {
 
 					stage[3] = window.innerHeight;
 					changed = true;
@@ -580,3 +431,4 @@
 			}
 
 
+})(jQuery, window, document);
