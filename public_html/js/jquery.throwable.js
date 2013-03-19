@@ -74,7 +74,8 @@
         defaults: {
             infinitX: false,
             gravity:{x: 0, y: 1},
-             timeStep : 1 / 25
+             timeStep : 1 / 25,
+             hardMaterial : 1
         },
         /**
          * init the plugin
