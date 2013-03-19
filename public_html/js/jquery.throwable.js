@@ -31,7 +31,7 @@
 
 (function($, window, document, undefined) {
     var delta = [0, 0];
-    var stage = [window.screenX, window.screenY, window.innerWidth, window.innerHeight];
+    var stage = {X:window.screenX, Y:window.screenY, Width:window.innerWidth, Height:window.innerHeight};
 
     var isRunning = false;
     var isMouseDown = false;
@@ -73,7 +73,7 @@
         _this: null,
         defaults: {
             infinitX: false,
-            gravity:{x: 0, y: 1},
+             gravity:{x: 0, y: 1},
              timeStep : 1 / 25,
              hardMaterial : 1
         },
@@ -342,10 +342,10 @@
                 walls[3] = null;
             }
 
-            walls[0] = this.createBox(world, stage[2] / 2, -wall_thickness, stage[2], wall_thickness);
-            walls[1] = this.createBox(world, stage[2] / 2, stage[3] + wall_thickness, stage[2], wall_thickness);
-            walls[2] = this.createBox(world, -wall_thickness, stage[3] / 2, wall_thickness, stage[3]);
-            walls[3] = this.createBox(world, stage[2] + wall_thickness, stage[3] / 2, wall_thickness, stage[3]);
+            walls[0] = this.createBox(world, stage.Width / 2, -wall_thickness, stage.Width, wall_thickness);
+            walls[1] = this.createBox(world, stage.Width / 2, stage.Height + wall_thickness, stage.Width, wall_thickness);
+            walls[2] = this.createBox(world, -wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
+            walls[3] = this.createBox(world, stage.Width + wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
 
             wallsSetted = true;
 
@@ -371,29 +371,29 @@
 
             var changed = false;
 
-            if (stage[0] !== window.screenX) {
+            if (stage.X !== window.screenX) {
 
-                delta[0] = (window.screenX - stage[0]) * 50;
-                stage[0] = window.screenX;
+                delta[0] = (window.screenX - stage.X) * 50;
+                stage.X = window.screenX;
                 changed = true;
             }
 
-            if (stage[1] !== window.screenY) {
+            if (stage.Y !== window.screenY) {
 
-                delta[1] = (window.screenY - stage[1]) * 50;
-                stage[1] = window.screenY;
+                delta[1] = (window.screenY - stage.Y) * 50;
+                stage.Y = window.screenY;
                 changed = true;
             }
 
-            if (stage[2] !== window.innerWidth) {
+            if (stage.Width !== window.innerWidth) {
 
-                stage[2] = window.innerWidth;
+                stage.Width = window.innerWidth;
                 changed = true;
             }
 
-            if (stage[3] !== window.innerHeight) {
+            if (stage.Height !== window.innerHeight) {
 
-                stage[3] = window.innerHeight;
+                stage.Height = window.innerHeight;
                 changed = true;
             }
 
