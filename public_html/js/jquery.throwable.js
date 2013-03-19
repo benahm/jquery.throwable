@@ -75,7 +75,8 @@
              infinitX: false,
              gravity:{x: 0, y: 1},
              timeStep : 1 / 25,
-             hardMaterial : 1
+             hardMaterial : 1,
+             containment:[0,0,0,0]
         },
         /**
          * init the plugin
