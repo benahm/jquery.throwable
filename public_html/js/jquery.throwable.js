@@ -26,9 +26,14 @@
         	///==============================================================================================
                 
 
-
-
-
+/**
+ * JQuery throwable plugin
+ * @param {type} $
+ * @param {type} window
+ * @param {type} document
+ * @param {type} undefined
+ * @returns {undefined}
+ */
 (function($, window, document, undefined) {
     var delta = {X:0, Y:0};
     var stage = {X:window.screenX, Y:window.screenY, Width:window.innerWidth, Height:window.innerHeight};
@@ -39,7 +44,6 @@
     var worldAABB;
     var world;
     var iterations = 1;
-
     
     var wall_thickness = 200;
     var wallsSetted = false;
@@ -50,8 +54,6 @@
     var elements = [];
     var bodies = [];
     var properties = [];
-
-
 
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
@@ -70,7 +72,7 @@
     $.extend($.fn.throwable.prototype, {
         _this: null,
         defaults: {
-            infinitX: false,
+             infinitX: false,
              gravity:{x: 0, y: 1},
              timeStep : 1 / 25,
              hardMaterial : 1
@@ -108,15 +110,12 @@
 
         },
         // init function
-
         init: function() {
             _this=this;
              this.getBrowserDimensions();
             $(document).on('mousedown', this.onDocumentMouseDown);
             $(document).on('mouseup', this.onDocumentMouseUp);
             $(document).on('mousemove', this.onDocumentMouseMove);
-
-
 
             $(document).on('touchstart', this.onDocumentTouchStart);
             $(document).on('touchmove', this.onDocumentTouchMove);
@@ -125,7 +124,6 @@
             $(window).on('deviceorientation', this.onWindowDeviceOrientation, false);
 
             // init box2d
-
             worldAABB = new b2AABB();
             worldAABB.minVertex.Set(-200, -200);
             worldAABB.maxVertex.Set(window.innerWidth + 200, window.innerHeight + 200);
@@ -346,9 +344,8 @@
             wallsSetted = true;
 
         },
+        
         // .. UTILS
-
-
         getElementProperties: function(element) {
 
             var x = 0;
