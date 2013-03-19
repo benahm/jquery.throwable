@@ -40,7 +40,7 @@
     var world;
     var iterations = 1;
 
-    var walls = [];
+    
     var wall_thickness = 200;
     var wallsSetted = false;
 
@@ -328,24 +328,24 @@
             return body;
         },
         setWalls: function() {
-
+            var walls ={left:null,right:null,top:null,bottom:null};
             if (wallsSetted) {
 
-                world.DestroyBody(walls[0]);
-                world.DestroyBody(walls[1]);
-                world.DestroyBody(walls[2]);
-                world.DestroyBody(walls[3]);
+                world.DestroyBody(walls.left);
+                world.DestroyBody(walls.top);
+                world.DestroyBody(walls.right);
+                world.DestroyBody(walls.bottom);
 
-                walls[0] = null;
-                walls[1] = null;
-                walls[2] = null;
-                walls[3] = null;
+                walls.left = null;
+                walls.top = null;
+                walls.right = null;
+                walls.bottom = null;
             }
 
-            walls[0] = this.createBox(world, stage.Width / 2, -wall_thickness, stage.Width, wall_thickness);
-            walls[1] = this.createBox(world, stage.Width / 2, stage.Height + wall_thickness, stage.Width, wall_thickness);
-            walls[2] = this.createBox(world, -wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
-            walls[3] = this.createBox(world, stage.Width + wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
+            walls.top = this.createBox(world, stage.Width / 2, -wall_thickness, stage.Width, wall_thickness);
+            walls.bottom = this.createBox(world, stage.Width / 2, stage.Height + wall_thickness, stage.Width, wall_thickness);
+            walls.right = this.createBox(world, -wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
+            walls.left = this.createBox(world, stage.Width + wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
 
             wallsSetted = true;
 
