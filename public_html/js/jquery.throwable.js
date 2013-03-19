@@ -30,7 +30,7 @@
 
 
 (function($, window, document, undefined) {
-    var delta = [0, 0];
+    var delta = {X:0, Y:0};
     var stage = {X:window.screenX, Y:window.screenY, Width:window.innerWidth, Height:window.innerHeight};
 
     var isRunning = false;
@@ -140,11 +140,11 @@
             if (_this.getBrowserDimensions())
                 _this.setWalls();
 
-            delta[0] += (0 - delta[0]) * .5;
-            delta[1] += (0 - delta[1]) * .5;
+            delta.X += (0 - delta.X) * .5;
+            delta.Y += (0 - delta.Y) * .5;
 
-            world.m_gravity.x = this.defaults.gravity.x * 350 + delta[0];
-            world.m_gravity.y = this.defaults.gravity.y * 350 + delta[1];
+            world.m_gravity.x = this.defaults.gravity.x * 350 + delta.X;
+            world.m_gravity.y = this.defaults.gravity.y * 350 + delta.Y;
 
             this.mouseDrag();
             world.Step(this.defaults.timeStep, iterations);
@@ -369,14 +369,14 @@
 
             if (stage.X !== window.screenX) {
 
-                delta[0] = (window.screenX - stage.X) * 50;
+                delta.X = (window.screenX - stage.X) * 50;
                 stage.X = window.screenX;
                 changed = true;
             }
 
             if (stage.Y !== window.screenY) {
 
-                delta[1] = (window.screenY - stage.Y) * 50;
+                delta.Y = (window.screenY - stage.Y) * 50;
                 stage.Y = window.screenY;
                 changed = true;
             }
