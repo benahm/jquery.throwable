@@ -47,8 +47,6 @@
     var mouseJoint;
     var mouse = {x: 0, y: 0};
 
-    var mouseOnClick = [];
-
     var elements = [];
     var bodies = [];
     var properties = [];
@@ -102,11 +100,10 @@
 
                 // Clean position dependencies
                 while (element.offsetParent) {
-
                     element = element.offsetParent;
                     element.style.position = 'static';
-
                 }
+                
                 elements.push(elem);
 
         },
@@ -156,10 +153,11 @@
 
                 var body = bodies[i];
                 var element = elements[i];
-
+                
                 element.style.left = (body.m_position0.x - (properties[i].Width >> 1)) + 'px';
                 element.style.top = (body.m_position0.y - (properties[i].Height >> 1)) + 'px';
-
+                 // console.log($(element).position().left -(stage.Width - properties[i].Width ))
+                 //if($(element).position().left $(document).width()) alert("out left");
                 var style = 'rotate(' + (body.m_rotation0 * 57.2957795) + 'deg)';
 
                 element.style.transform = style;
@@ -234,8 +232,6 @@
 
         onElementMouseDown: function(event) {
             event.preventDefault();
-            mouseOnClick[0] = event.clientX;
-            mouseOnClick[1] = event.clientY;
         },
         onElementMouseUp: function(event) {
             event.preventDefault();
