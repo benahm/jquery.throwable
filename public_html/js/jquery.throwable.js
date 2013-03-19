@@ -155,7 +155,10 @@
                 
                 element.style.left = (body.m_position0.x - (properties[i].Width >> 1)) + 'px';
                 element.style.top = (body.m_position0.y - (properties[i].Height >> 1)) + 'px';
-                 // console.log($(element).position().left -(stage.Width - properties[i].Width ))
+                if(i===1){
+                 //console.log($(element).position().left -(stage.Width - properties[i].Width ))
+                 //console.log(this.getProjectedHeight($(element)));
+                }
                  //if($(element).position().left $(document).width()) alert("out left");
                 var style = 'rotate(' + (body.m_rotation0 * 57.2957795) + 'deg)';
 
@@ -165,6 +168,30 @@
                 element.style.OTransform = style;
                 element.style.msTransform = style;
             }
+        },
+        getProjectedWidth:function(elem){
+            var rotationAngle=this.getRotation(elem);
+            return  elem.width()*Math.cos(rotationAngle) + elem.height()*Math.sin(rotationAngle); 
+        },
+        getProjectedHeight:function(elem){
+            var rotationAngle=this.getRotation(elem);
+            return  elem.width()*Math.sin(rotationAngle) + elem.height()*Math.cos(rotationAngle); 
+        },
+        getRotation: function(obj) {
+            var matrix = obj.css("-webkit-transform") ||
+                    obj.css("-moz-transform") ||
+                    obj.css("-ms-transform") ||
+                    obj.css("-o-transform") ||
+                    obj.css("transform");
+            if (matrix !== 'none') {
+                var values = matrix.split('(')[1].split(')')[0].split(',');
+                var a = values[0];
+                var b = values[1];
+                var angle = Math.atan2(b, a);
+            } else {
+                var angle = 0;
+            }
+            return angle;
         },
         run: function() {
 
