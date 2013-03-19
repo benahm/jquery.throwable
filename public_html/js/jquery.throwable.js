@@ -76,7 +76,7 @@
              gravity:{x: 0, y: 1},
              timeStep : 1 / 25,
              hardMaterial : 1,
-             containment:[0,0,0,0]
+             containment: [0,0,stage.Width,stage.Height]
         },
         /**
          * init the plugin
@@ -114,6 +114,7 @@
         init: function() {
             _this=this;
              this.getBrowserDimensions();
+             console.log(this.defaults.containment)
             $(document).on('mousedown', this.onDocumentMouseDown);
             $(document).on('mouseup', this.onDocumentMouseUp);
             $(document).on('mousemove', this.onDocumentMouseMove);
@@ -363,11 +364,11 @@
                 walls.right = null;
                 walls.bottom = null;
             }
-
-            walls.top = this.createBox(world, stage.Width / 2, -wall_thickness, stage.Width, wall_thickness);
-            walls.bottom = this.createBox(world, stage.Width / 2, stage.Height + wall_thickness, stage.Width, wall_thickness);
-            walls.right = this.createBox(world, -wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
-            walls.left = this.createBox(world, stage.Width + wall_thickness, stage.Height / 2, wall_thickness, stage.Height);
+            var x1=this.defaults.containment[0],y1=this.defaults.containment[1],x2=this.defaults.containment[2],y2=this.defaults.containment[3];
+            walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness+x1,x2-x1, wall_thickness);
+            walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
+            walls.right = this.createBox(world, -wall_thickness+y1, (y2+y1) / 2, wall_thickness, y2-y1);
+            walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
 
             wallsSetted = true;
 
