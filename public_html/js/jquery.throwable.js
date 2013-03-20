@@ -35,9 +35,17 @@
  * @returns {undefined}
  */
 (function($, window, document, undefined) {
+    
+
+
+
+
+
+
+
+function throwable(){
     var delta = {X:0, Y:0};
     var stage = {X:window.screenX, Y:window.screenY, Width:window.innerWidth, Height:window.innerHeight};
-
     var isRunning = false;
     var isMouseDown = false;
 
@@ -54,21 +62,7 @@
     var elements = [];
     var bodies = [];
     var properties = [];
-
-    $.fn.throwable = function(options) {
-        if ($.isFunction(this.each)) {
-            var _this=this;
-            return this.each(function() {
-                if ($(_this).data('throwable.instance') === undefined) {
-                        $(_this).data('throwable.instance', new $.fn.throwable());
-                        $(_this).data('throwable.instance').init();
-                     }
-                    $(_this).data('throwable.instance').myinit(options, this);
-            });
-        }
-    };
-
-    $.extend($.fn.throwable.prototype, {
+    $.extend(throwable.prototype, {
         defaults: {
              infinitX: false,
              gravity:{x: 0, y: 1},
@@ -81,7 +75,6 @@
          */
         myinit: function(o, elem) {
             this.defaults = $.extend({}, this.defaults, o);
-            console.log(this.defaults);
                 // Get box2d elements
                 var property=this.getElementProperties(elem);
                 properties.push(property);
@@ -112,7 +105,6 @@
         init: function() {
             var _this = this;
             this.getBrowserDimensions();
-            console.log(this.defaults.containment)
             $(document).on('mousedown', function(event) {
 
                 isMouseDown = true;
@@ -244,11 +236,6 @@
             }, 25);
 
         },
-        
-        
-    
-        
-        
         
         //
 
@@ -436,4 +423,29 @@
         }
 
     });
+};
+
+
+
+    $.fn.throwable = function(options) {
+        if ($.isFunction(this.each)) {
+            var _this=this;
+           return this.each(function(i) {
+                if ($(_this).data('throwable.instance') === undefined) {
+                        $(_this).data('throwable.instance', new throwable());
+                        $(_this).data('throwable.instance').init();
+                     }
+                     
+                    $(_this).data('throwable.instance').myinit(options, this);
+                    if(i===_this.size()-1){
+                        $.throwables.push($(_this).data('throwable.instance'));
+                         $(_this).data('throwable.instance', undefined);
+
+                    }
+            });
+             
+        }
+    };
+ $.throwables=[];   
+    
 })(jQuery, window, document);
