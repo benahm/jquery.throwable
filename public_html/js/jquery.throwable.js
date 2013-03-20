@@ -64,13 +64,11 @@
                         $(_this).data('throwable.instance').init();
                      }
                     $(_this).data('throwable.instance').myinit(options, this);
-             
             });
         }
     };
 
     $.extend($.fn.throwable.prototype, {
-        _this: null,
         defaults: {
              infinitX: false,
              gravity:{x: 0, y: 1},
@@ -112,18 +110,61 @@
         },
         // init function
         init: function() {
-            _this=this;
-             this.getBrowserDimensions();
-             console.log(this.defaults.containment)
-            $(document).on('mousedown', this.onDocumentMouseDown);
-            $(document).on('mouseup', this.onDocumentMouseUp);
-            $(document).on('mousemove', this.onDocumentMouseMove);
+            var _this = this;
+            this.getBrowserDimensions();
+            console.log(this.defaults.containment)
+            $(document).on('mousedown', function(event) {
 
-            $(document).on('touchstart', this.onDocumentTouchStart);
-            $(document).on('touchmove', this.onDocumentTouchMove);
-            $(document).on('touchend', this.onDocumentTouchEnd);
+                isMouseDown = true;
 
-            $(window).on('deviceorientation', this.onWindowDeviceOrientation, false);
+            });
+            $(document).on('mouseup', function(event) {
+
+                isMouseDown = false;
+
+            });
+            $(document).on('mousemove', function(event) {
+                if (!isRunning)
+                    _this.run();
+
+                mouse.x = event.clientX;
+                mouse.y = event.clientY;
+            });
+
+            $(document).on('touchstart', function(event) {
+                if (event.touches.length == 1) {
+
+                    if (!isRunning) {
+                        _this.run();
+                    }
+                    mouse.x = event.touches[0].pageX;
+                    mouse.y = event.touches[0].pageY;
+                    isMouseDown = true;
+                }
+            });
+            $(document).on('touchmove', function(event) {
+
+                if (event.touches.length == 1) {
+                    event.preventDefault();
+                    mouse.x = event.touches[0].pageX;
+                    mouse.y = event.touches[0].pageY;
+                }
+
+            });
+            $(document).on('touchend', function(event) {
+
+                if (event.touches.length == 0) {
+
+                    isMouseDown = false;
+                }
+            });
+
+            $(window).on('deviceorientation', function(event) {
+                if (event.beta) {
+                    this.defaults.gravity.x = Math.sin(event.gamma * Math.PI / 180);
+                    this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
+                }
+            });
 
             // init box2d
             worldAABB = new b2AABB();
@@ -137,9 +178,9 @@
         },
         loop: function() {
 
-            if (_this.getBrowserDimensions())
-                _this.setWalls();
-
+            if (this.getBrowserDimensions())
+                this.setWalls();
+            
             delta.X += (0 - delta.X) * .5;
             delta.Y += (0 - delta.Y) * .5;
 
@@ -195,66 +236,20 @@
             return angle;
         },
         run: function() {
-
+            var _this=this;
             isRunning = true;
             setInterval(function() {
                 _this.loop();
+               
             }, 25);
 
         },
-        onDocumentMouseDown: function(event) {
-
-            isMouseDown = true;
-
-        },
-        onDocumentMouseUp: function(event) {
-
-            isMouseDown = false;
-
-        },
-        onDocumentMouseMove: function(event) {
-
-            if (!isRunning)
-                _this.run();
-
-            mouse.x = event.clientX;
-            mouse.y = event.clientY;
-
-        },
-        onDocumentTouchStart: function(event) {
-
-            if (event.touches.length == 1) {
-
-                if (!isRunning) {
-                    _this.run();
-                }
-                mouse.x = event.touches[0].pageX;
-                mouse.y = event.touches[0].pageY;
-                isMouseDown = true;
-            }
-        },
-        onDocumentTouchMove: function(event) {
-
-            if (event.touches.length == 1) {
-                event.preventDefault();
-                mouse.x = event.touches[0].pageX;
-                mouse.y = event.touches[0].pageY;
-            }
-
-        },
-        onDocumentTouchEnd: function(event) {
-
-            if (event.touches.length == 0) {
-
-                isMouseDown = false;
-            }
-        },
-        onWindowDeviceOrientation: function(event) {
-            if (event.beta) {
-                this.defaults.gravity.x = Math.sin(event.gamma * Math.PI / 180);
-                this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
-            }
-        },
+        
+        
+    
+        
+        
+        
         //
 
         onElementMouseDown: function(event) {
