@@ -278,6 +278,24 @@
             boxBd.userData = {element: element};
 
             return world.CreateBody(boxBd);
+        }, createCircle: function(world, x, y,radius, fixed, element) {
+
+            if (typeof(fixed) === 'undefined')
+                fixed = true;
+
+            var boxSd = new b2CircleDef();
+
+            if (!fixed)
+                boxSd.density = 1.0;
+
+            boxSd.radius=radius;
+
+            var boxBd = new b2BodyDef();
+            boxBd.AddShape(boxSd);
+            boxBd.position.Set(x, y);
+            boxBd.userData = {element: element};
+
+            return world.CreateBody(boxBd);
         },
         mouseDrag: function() {
             // mouse press
