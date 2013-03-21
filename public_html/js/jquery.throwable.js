@@ -2,7 +2,15 @@
  * throwable
  * JQuery plugin 
  */
-   
+ 
+ /**------------------------------------**/
+//              CREDITS
+/**------------------------------------**/
+/*
+ - Mr. Doobs :: http://mrdoob.com/92/Google_Gravity
+ - Alex Arnell's inheritance.js :: http://code.google.com/p/inheritance/
+ - Box2Djs :: http://box2d-js.sourceforge.net/
+*/
 
 /**
  * JQuery throwable plugin
@@ -68,7 +76,8 @@ function throwable(){
              gravity:{x: 0, y: 1},
              timeStep : 1 / 25,
              hardMaterial : 1,
-             containment: [0,0,stage.Width,stage.Height]
+             containment: [0,0,stage.Width,stage.Height],
+             drag:true
         },
         /**
          * init the plugin
@@ -286,6 +295,7 @@ function throwable(){
             return world.CreateBody(boxBd);
         },
         mouseDrag: function() {
+        if(this.defaults.drag){
             // mouse press
             if (isMouseDown && !mouseJoint) {
 
@@ -320,6 +330,7 @@ function throwable(){
                 var p2 = new b2Vec2(mouse.x + window.scrollX, mouse.y +window.scrollY);
                 mouseJoint.SetTarget(p2);
             }
+          }
         },
         getBodyAtMouse: function() {
 
