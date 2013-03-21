@@ -15,15 +15,11 @@
 (function($, window, document, undefined) {
     
 
-
-
-
-
-
-
 function throwable(){
     
-     /* Based on Alex Arnell's inheritance implementation. */
+    /********* libraries *********/
+    
+                /* Based on Alex Arnell's inheritance implementation. */
               function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,n=new Array(t);while(t--)n[t]=e[t];return n}var Class={create:function(){function n(){this.initialize.apply(this,arguments)}var e=null,t=$A(arguments);if($.isFunction(t[0]))e=t.shift();Object.extend(n,Class.Methods);n.superclass=e;n.subclasses=[];if(e){var r=function(){};r.prototype=e.prototype;n.prototype=new r;e.subclasses.push(n)}for(var i=0;i<t.length;i++)n.addMethods(t[i]);if(!n.prototype.initialize)n.prototype.initialize=this.emptyFunction;n.prototype.constructor=n;return n},emptyFunction:function(){}};Class.Methods={addMethods:function(e){var t=this.superclass&&this.superclass.prototype;var n=Object.keys(e);if(!Object.keys({toString:true}).length)n.push("toString","valueOf");for(var r=0,i=n.length;r<i;r++){var s=n[r],o=e[s];if(t&&$.isFunction(o)&&o.argumentNames().first()=="$super"){var u=o,o=Object.extend(function(e){return function(){return t[e].apply(this,arguments)}}(s).wrap(u),{valueOf:function(){return u},toString:function(){return u.toString()}})}this.prototype[s]=o}return this}};Object.extend=function(e,t){for(var n in t)e[n]=t[n];return e};Object.extend(Object,{inspect:function(e){try{if(Object.isUndefined(e))return"undefined";if(e===null)return"null";return e.inspect?e.inspect():String(e)}catch(t){if(t instanceof RangeError)return"...";throw t}},toJSON:function(e){var t=typeof e;switch(t){case"undefined":case"function":case"unknown":return;case"boolean":return e.toString()}if(e===null)return"null";if(e.toJSON)return e.toJSON();if(Object.isElement(e))return;var n=[];for(var r in e){var i=Object.toJSON(e[r]);if(!Object.isUndefined(i))n.push(r.toJSON()+": "+i)}return"{"+n.join(", ")+"}"},toQueryString:function(e){return $H(e).toQueryString()},toHTML:function(e){return e&&e.toHTML?e.toHTML():String.interpret(e)},keys:function(e){var t=[];for(var n in e)t.push(n);return t},values:function(e){var t=[];for(var n in e)t.push(e[n]);return t},clone:function(e){return Object.extend({},e)},isElement:function(e){return e&&e.nodeType==1},isHash:function(e){return e instanceof Hash},isString:function(e){return typeof e=="string"},isUndefined:function(e){return typeof e=="undefined"}})
 
 			if (WebKit = navigator.userAgent.indexOf('AppleWebKit/index.html') > -1) {
@@ -101,7 +97,6 @@ function throwable(){
                     element = element.offsetParent;
                     element.style.position = 'static';
                 }
-                
                 elements.push(elem);
 
         },
@@ -109,16 +104,10 @@ function throwable(){
         init: function() {
             var _this = this;
             this.getBrowserDimensions();
+            
             $(window).scroll(function (){
                      _this.getBrowserDimensions();
                      _this.setWalls();
-                    
-                     console.log(bodies);
-//                        worldAABB = new b2AABB();
-//                        worldAABB.minVertex.Set(-200, -200);
-//                        worldAABB.maxVertex.Set(window.innerWidth + window.scrollX + 200, window.innerHeight + window.scrollY + 200);
-//              
-//                        world = new b2World(worldAABB, new b2Vec2(0, 0), true);
             });
             $(document).on('mousedown', function(event) {
                 
@@ -251,15 +240,14 @@ function throwable(){
         },
         
         //
-
         onElementMouseDown: function(event) {
             event.preventDefault();
         },
         onElementMouseUp: function(event) {
             event.preventDefault();
         },
+                
         // .. BOX2D UTILS
-
         createBox: function(world, x, y, width, height, fixed, element) {
 
             if (typeof(fixed) === 'undefined')
@@ -362,6 +350,7 @@ function throwable(){
 
             return body;
         },
+        // create contaimnent walls        
         setWalls: function() {
 
             if (wallsSetted) {
@@ -436,11 +425,11 @@ function throwable(){
     });
 };
 
-
-
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
             var _this=this;
+           console.log("-----")
+           console.log(this)
            return this.each(function(i) {
                 if ($(_this).data('throwable.instance') === undefined) {
                         $(_this).data('throwable.instance', new throwable());
