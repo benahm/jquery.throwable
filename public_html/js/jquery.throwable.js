@@ -59,7 +59,7 @@ function throwable(){
     
     var wall_thickness = 100;
     var wallsSetted = false;
-
+    
     var mouseJoint;
     var mouse = {x: 0, y: 0};
 
@@ -112,6 +112,8 @@ function throwable(){
             $(window).scroll(function (){
                      _this.getBrowserDimensions();
                      _this.setWalls();
+                    
+                     console.log(bodies);
 //                        worldAABB = new b2AABB();
 //                        worldAABB.minVertex.Set(-200, -200);
 //                        worldAABB.maxVertex.Set(window.innerWidth + window.scrollX + 200, window.innerHeight + window.scrollY + 200);
@@ -119,7 +121,7 @@ function throwable(){
 //                        world = new b2World(worldAABB, new b2Vec2(0, 0), true);
             });
             $(document).on('mousedown', function(event) {
-
+                
                 isMouseDown = true;
 
             });
@@ -138,7 +140,7 @@ function throwable(){
 
             $(document).on('touchstart', function(event) {
                 if (event.touches.length == 1) {
-
+                    
                     if (!isRunning) {
                         _this.run();
                     }
@@ -306,7 +308,7 @@ function throwable(){
                     var md = new b2MouseJointDef();
                     md.body1 = world.m_groundBody;
                     md.body2 = body;
-                    md.target.Set(mouse.x, mouse.y);
+                    md.target.Set(mouse.x + window.scrollX, mouse.y +window.scrollY);
                     md.maxForce = 30000.0 * body.m_mass;
                     md.timeStep = this.defaults.timeStep;
                     mouseJoint = world.CreateJoint(md);
@@ -327,7 +329,7 @@ function throwable(){
             // mouse move
             if (mouseJoint) {
 
-                var p2 = new b2Vec2(mouse.x, mouse.y);
+                var p2 = new b2Vec2(mouse.x + window.scrollX, mouse.y +window.scrollY);
                 mouseJoint.SetTarget(p2);
             }
         },
@@ -336,10 +338,9 @@ function throwable(){
             // Make a small box.
             var mousePVec = new b2Vec2();
             mousePVec.Set(mouse.x + window.scrollX, mouse.y +window.scrollY);
-            console.log(mouse)
             var aabb = new b2AABB();
-            aabb.minVertex.Set(mouse.x + window.scrollX - 1, mouse.y +window.scrollY- 1);
-            aabb.maxVertex.Set(mouse.x + window.scrollX + 1, mouse.y+window.scrollY + 1);
+            aabb.minVertex.Set(mouse.x + window.scrollX - 2, mouse.y +window.scrollY- 2);
+            aabb.maxVertex.Set(mouse.x + window.scrollX + 2, mouse.y+window.scrollY + 2);
 
             // Query the world for overlapping shapes.
             var k_maxCount = 10;
@@ -381,7 +382,6 @@ function throwable(){
             walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
             walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
             walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
-            console.log(wall_thickness);
             wallsSetted = true;
 
         },
