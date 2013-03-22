@@ -83,6 +83,7 @@ function throwable(){
          * init the plugin
          */
         myinit: function(o, elem) {
+
             this.defaults = $.extend({}, this.defaults, o);
                 // Get box2d elements
                 var property=this.getElementProperties(elem);
@@ -439,8 +440,22 @@ function throwable(){
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
             var _this=this;
-           console.log("-----")
-           console.log(this)
+           console.log("-----"+options)
+//          if ($("body").data('throwable.instance') === undefined) {
+//                        $("body").data('throwable.instance', new throwable());
+//                        console.log("instance");
+//                     }
+//           var throwableInstance=$("body").data('throwable.instance');
+//           if ( (throwableInstance)[options] ) {
+//               if($("body").data("first")===undefined)
+//                    throwableInstance[options]();
+//                if ($("body").data("first") === undefined) {
+//                    $("body").data("first",true);
+//                }
+//               return this.each(function(){
+//                 throwableInstance.myinit(options,this);
+//               });
+//           }
            return this.each(function(i) {
                 if ($(_this).data('throwable.instance') === undefined) {
                         $(_this).data('throwable.instance', new throwable());
