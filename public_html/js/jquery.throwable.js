@@ -80,9 +80,9 @@ function throwable(){
              drag:true
         },
         /**
-         * init the plugin
+         * initElem initialize element
          */
-        myinit: function(o, elem) {
+        initElem: function(o, elem) {
 
             this.defaults = $.extend({}, this.defaults, o);
                 // Get box2d elements
@@ -110,8 +110,14 @@ function throwable(){
                 elements.push(elem);
 
         },
+        
+        setEnv: function() {
+            // setwalls
+            this.setWalls();
+           
+        },
         // init function
-        init: function() {
+        init:function(){
             var _this = this;
             this.getBrowserDimensions();
             
@@ -120,7 +126,7 @@ function throwable(){
                      _this.setWalls();
             });
             $(document).on('mousedown', function(event) {
-                
+
                 isMouseDown = true;
 
             });
@@ -171,16 +177,13 @@ function throwable(){
                     this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
                 }
             });
-
-            // init box2d
+             // init box2d
             worldAABB = new b2AABB();
             worldAABB.minVertex.Set(-200, -200);
             worldAABB.maxVertex.Set(window.innerWidth + 2000, window.innerHeight + 2000);
 
             world = new b2World(worldAABB, new b2Vec2(0, 0), true);
 
-            // walls
-            this.setWalls();
         },
         loop: function() {
             
@@ -383,7 +386,7 @@ function throwable(){
             }
             console.log(this.defaults.containment);
             var x1=this.defaults.containment[0],y1=this.defaults.containment[1],x2=this.defaults.containment[2],y2=this.defaults.containment[3];
-            walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness,1,1,10,10);
+            walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness);
             walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
             walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
             walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
@@ -447,19 +450,15 @@ function throwable(){
            console.log("-----"+options)
           if ($("body").data('throwable.instance') === undefined) {
                         $("body").data('throwable.instance', new throwable());
+                        $("body").data('throwable.instance').init();
                         console.log("instance");
                      }
            var throwableInstance=$("body").data('throwable.instance');
-           if ( (throwableInstance)[options] ) {
-               if($("body").data("first")===undefined)
-                    throwableInstance[options]();
-                if ($("body").data("first") === undefined) {
-                    $("body").data("first",true);
-                }
-               return this.each(function(){
-                 throwableInstance.myinit(options,this);
+  
+                 throwableInstance.setEnv();
+                return this.each(function(){
+                    throwableInstance.initElem(options,this);
                });
-           }
 //           return this.each(function(i) {
 //                if ($(_this).data('throwable.instance') === undefined) {
 //                        $(_this).data('throwable.instance', new throwable());
