@@ -100,7 +100,7 @@ function throwable(){
                 $(element).on('mousedown', this.onElementMouseDown);
                 $(element).on('mouseup', this.onElementMouseUp);
 
-                bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false));
+                bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false));
 
                 // Clean position dependencies
                 while (element.offsetParent) {
@@ -258,13 +258,17 @@ function throwable(){
         },
                 
         // .. BOX2D UTILS
-        createBox: function(world, x, y, width, height, fixed, element) {
+        createBox: function(world, x, y, width, height, fixed,categoryBits,maskBits,element) {
 
             if (typeof(fixed) === 'undefined')
                 fixed = true;
 
             var boxSd = new b2BoxDef();
-
+            if(categoryBits && maskBits){
+                boxSd.categoryBits=categoryBits;
+                boxSd.maskBits=maskBits;
+            }
+            console.log(categoryBits+"+"+maskBits+": "+boxSd.maskBits+"+"+boxSd.categoryBits);
             if (!fixed)
                 boxSd.density = 1.0;
 
@@ -379,7 +383,7 @@ function throwable(){
             }
             console.log(this.defaults.containment);
             var x1=this.defaults.containment[0],y1=this.defaults.containment[1],x2=this.defaults.containment[2],y2=this.defaults.containment[3];
-            walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness);
+            walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness,1,1,10,10);
             walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
             walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
             walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
@@ -441,34 +445,34 @@ function throwable(){
         if ($.isFunction(this.each)) {
             var _this=this;
            console.log("-----"+options)
-//          if ($("body").data('throwable.instance') === undefined) {
-//                        $("body").data('throwable.instance', new throwable());
-//                        console.log("instance");
-//                     }
-//           var throwableInstance=$("body").data('throwable.instance');
-//           if ( (throwableInstance)[options] ) {
-//               if($("body").data("first")===undefined)
-//                    throwableInstance[options]();
-//                if ($("body").data("first") === undefined) {
-//                    $("body").data("first",true);
-//                }
-//               return this.each(function(){
-//                 throwableInstance.myinit(options,this);
-//               });
-//           }
-           return this.each(function(i) {
-                if ($(_this).data('throwable.instance') === undefined) {
-                        $(_this).data('throwable.instance', new throwable());
-                        $(_this).data('throwable.instance').init();
+          if ($("body").data('throwable.instance') === undefined) {
+                        $("body").data('throwable.instance', new throwable());
+                        console.log("instance");
                      }
-                     
-                    $(_this).data('throwable.instance').myinit(options, this);
-                    if(i===_this.size()-1){
-                        $.throwables.push($(_this).data('throwable.instance'));
-                         $(_this).data('throwable.instance', undefined);
-
-                    }
-            });
+           var throwableInstance=$("body").data('throwable.instance');
+           if ( (throwableInstance)[options] ) {
+               if($("body").data("first")===undefined)
+                    throwableInstance[options]();
+                if ($("body").data("first") === undefined) {
+                    $("body").data("first",true);
+                }
+               return this.each(function(){
+                 throwableInstance.myinit(options,this);
+               });
+           }
+//           return this.each(function(i) {
+//                if ($(_this).data('throwable.instance') === undefined) {
+//                        $(_this).data('throwable.instance', new throwable());
+//                        $(_this).data('throwable.instance').init();
+//                     }
+//                     
+//                    $(_this).data('throwable.instance').myinit(options, this);
+//                    if(i===_this.size()-1){
+//                        $.throwables.push($(_this).data('throwable.instance'));
+//                         $(_this).data('throwable.instance', undefined);
+//
+//                    }
+//            });
              
         }
     };
