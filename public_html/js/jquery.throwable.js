@@ -67,7 +67,7 @@
 
 var bool=false;
 var wall_thickness = 100;
-
+var numInstance=1;
 function throwable(){
     
     this.delta = {X:0, Y:0};
@@ -119,7 +119,7 @@ function throwable(){
                 $(element).on('mousedown', this.onElementMouseDown);
                 $(element).on('mouseup', this.onElementMouseUp);
 
-                this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false));
+                this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false,numInstance,numInstance));
 
                 // Clean position dependencies
                 while (element.offsetParent) {
@@ -132,8 +132,15 @@ function throwable(){
         
         setEnv: function(o) {
             var _this = this;
+            numInstance*=2;
             this.getBrowserDimensions();
-            
+            this.defaults = $.extend({}, this.defaults, o);
+            if(this.defaults.containment!=="window"){
+                var c=this.defaults.containment;
+                this.stage={X:c[0],Y:c[1],Width:c[2],Height:c[3]};
+            }
+            // setwalls
+            this.setWalls(numInstance);
             $(window).scroll(function (){
                      _this.getBrowserDimensions();
                      _this.setWalls();
@@ -190,10 +197,8 @@ function throwable(){
                     this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
                 }
             });
-             this.defaults = $.extend({}, this.defaults, o);
-            console.log(this.defaults)
-            // setwalls
-            this.setWalls();
+             
+           
            
         },
         // init function
@@ -390,7 +395,7 @@ function throwable(){
             return body;
         },
         // create contaimnent walls        
-        setWalls: function() {
+        setWalls: function(i) {
 
             if (this.wallsSetted) {
 
@@ -405,10 +410,10 @@ function throwable(){
                 this.walls.bottom = null;
             }
             var x1=this.stage.X,y1=this.stage.Y,x2=this.stage.Width,y2=this.stage.Height;
-            this.walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness);
-            this.walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
-            this.walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
-            this.walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
+            this.walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness,true,i,i);
+            this.walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness,true,i,i);
+            this.walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
+            this.walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
             this.wallsSetted = true;
 
         },
@@ -456,9 +461,15 @@ function throwable(){
                         this.stage.Height = window.innerHeight + window.scrollY;
                         changed = true;
                     }
-                    return changed;
-                } else
-                    return false;
+                        return changed;
+                    } else
+                    {
+                        var c = this.defaults.containment;
+                        this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
+                        console.log(stage);
+                        return false;
+                    }
+                    
             }
 
         });
