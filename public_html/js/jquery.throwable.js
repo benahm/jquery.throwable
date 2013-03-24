@@ -64,6 +64,19 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
     }
 
+    function inArrays(elem,array){
+        var rt=-1;
+        console.log("inArrays")
+        console.log(elem)
+        console.log(array)
+        for (var i=0;i<array.length;i++){
+            rt=$.inArray(elem,array[i].elements);
+            if(rt!==-1)
+                return {i1:i,i2:rt};
+        }
+        return rt;
+    }
+    
     var bool = false;
     var wall_thickness = 100;
     var numInstance = 1;
@@ -136,8 +149,12 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     this.elements.push(elem);
 
                 },
-                applyOptions:function(i){
-                    
+                applyOptions:function(o,i){
+                        this.defaults = $.extend({}, this.defaults, o);
+                        var body=this.bodies[i];
+                        var f=this.defaults.impulse.f,p=this.defaults.impulse.p;
+                        var ant_gravity = new b2Vec2(f * p.x * body.GetMass(), f * p.y * body.GetMass());
+                        body.ApplyImpulse(ant_gravity,body.GetCenterPosition());
                 },
                 setEnv: function(elem, o) {
                     var _this = this;
@@ -521,33 +538,27 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
             var throwableInstance = new throwable();
 
-            console.log(throwableInstance);
-            throwableInstance.setEnv(this, options);
-
+            
+            var isEnvSet=false;
             var rt = this.each(function() {
-                var i=$.inArray(this, $.throwableElements)
-                if ( i=== -1)
+                var i=inArrays(this, $.throwables);
+                if ( i=== -1){
+                    if(!isEnvSet){
+                         throwableInstance.setEnv(this, options);
+                         isEnvSet=true;
+                    }
                     throwableInstance.initElem(this);
+                }
+                else{ 
+                    throwableInstance=$.throwables[i.i1];
+                    throwableInstance.applyOptions(options,i.i2);
+                }
             });
-
-            $.merge($.throwableElements, throwableInstance.elements);
+            if($.inArray(throwableInstance,$.throwables)===-1)
+                $.throwables.push(throwableInstance);
             return rt;
-//           return this.each(function(i) {
-//                if ($(_this).data('throwable.instance') === undefined) {
-//                        $(_this).data('throwable.instance', new throwable());
-//                        $(_this).data('throwable.instance').init();
-//                     }
-//                     
-//                    $(_this).data('throwable.instance').myinit(options, this);
-//                    if(i===_this.size()-1){
-//                        $.throwables.push($(_this).data('throwable.instance'));
-//                         $(_this).data('throwable.instance', undefined);
-//
-//                    }
-//            });
-
         }
     };
-    $.throwableElements = [];
+    $.throwables = [];
 
 })(jQuery, window, document);
