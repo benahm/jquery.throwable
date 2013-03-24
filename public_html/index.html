@@ -8,17 +8,24 @@
 	</head>
 	<body>
                     
-                    <div id="div" class="box2d" style="width: 200px;height: 200px;background-color: red">
+                    <div id="div" class="box2d" style="width: 400px;height: 200px;background-color: red">
                         <div id="ds" class="bod2d" style="width: 30px;height: 20px;background-color: green; left: 50px;"> </div>
                     </div>
-                    <div id="dd" class="box2d" style="position: absolute;width: 300px;height: 2000px;background-color: blue; left: 500px;"> </div>
-                    <div id="ddd" class="box2d" style="width: 30px;height: 20px;background-color: green; left: 500px;"> </div>
+                    <div id="dd" class="box2d" style="position: absolute;width: 300px;height: 200px;background-color: blue; left: 500px;"> </div>
+                    <div id="ddd" class="box2d" style="width: 30px;height: 200px;background-color: green; left: 500px;"> </div>
                      <div id="d" class="bo2d" style="width: 30px;height: 20px;background-color: green; left: 50px;"> </div>
+                     <div id="dqq" class="bo2d" style="width: 75px;height: 40px;background-color: black; left: 150px;"> </div>
                     <script src="js/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
                     <script src="js/jquery.throwable.js" type="text/javascript"></script> 
                     <script>$(document).ready(function () { 
-                        $(".box2d").throwable();
-                        //$("#d").throwable();
+                        $(".box2d").throwable({drag:true,
+                            gravity:{x:0,y:1}
+                        });
+                        $(".bo2d").throwable({drag:true,gravity:{x:0,y:0},containment:[0,0,500,500]});
+                        $("#div").on("click",function(){
+                            //$("body").append('<div class="bo2d" style="width: 75px;height: 40px;background-color: black; left: 150px;"> </div>')
+                           // $(".bo2d").throwable({drag:true,gravity:{x:0,y:1}});
+                        })
                     });</script>
 
 	</body>

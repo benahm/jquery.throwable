@@ -58,8 +58,8 @@
             
              // init box2d
             worldAABB = new b2AABB();
-            worldAABB.minVertex.Set(-200, -200);
-            worldAABB.maxVertex.Set(window.innerWidth + 2000, window.innerHeight + 2000);
+            worldAABB.minVertex.Set(-3000, -3000);
+            worldAABB.maxVertex.Set(window.innerWidth + 3000, window.innerHeight + 3000);
 
             world = new b2World(worldAABB, new b2Vec2(0, 0), true);
 
@@ -93,10 +93,10 @@ function throwable(){
              infinitX: false,
              gravity:{x: 0, y: 0},
              timeStep : 1 / 40,
-             hardMaterial : 1,
+             hardMaterial : 1000,
              containment: "window",
              fixed:false,
-             drag:false
+             drag:true
         },
         /**
          * initElem initialize element
@@ -130,14 +130,20 @@ function throwable(){
 
         },
         
-        setEnv: function(o) {
+        setEnv: function(elem,o) {
             var _this = this;
             numInstance*=2;
             this.getBrowserDimensions();
             this.defaults = $.extend({}, this.defaults, o);
             if(this.defaults.containment!=="window"){
                 var c=this.defaults.containment;
-                this.stage={X:c[0],Y:c[1],Width:c[2],Height:c[3]};
+                if(c!=="parent")
+                    this.stage={X:c[0],Y:c[1],Width:c[2],Height:c[3]};
+                else{
+                    var p=elem.parent();
+                    this.stage={X:p.position().left,Y:p.position().top,Width:p.width(),Height:p.height()};
+                    console.log(this.stage)
+                }
             }
             // setwalls
             this.setWalls(numInstance);
@@ -205,6 +211,7 @@ function throwable(){
        
         loop: function() {
             this.applyGravity();
+            
             
             this.delta.X += (0 - this.delta.X) * .5;
             this.delta.Y += (0 - this.delta.Y) * .5;
@@ -410,10 +417,10 @@ function throwable(){
                 this.walls.bottom = null;
             }
             var x1=this.stage.X,y1=this.stage.Y,x2=this.stage.Width,y2=this.stage.Height;
-            this.walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness,true,i,i);
+            this.walls.top = this.createBox(world, (x1+x2)/ 2, y1-wall_thickness,x2-x1, wall_thickness,true,i,i);
             this.walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness,true,i,i);
-            this.walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
-            this.walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
+            this.walls.left = this.createBox(world, x1 -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
+            this.walls.right = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
             this.wallsSetted = true;
 
         },
@@ -434,7 +441,7 @@ function throwable(){
             return {X: x, Y: y, Width: width, Height: height};
         },
             getBrowserDimensions: function() {
-                if (this.defaults.containment === "window" || this.defaults.fixed === true) {
+                if (this.defaults.containment === "window"  || this.defaults.containment === "parent" ||this.defaults.fixed === true) {
                     var changed = false;
                     if (this.stage.X !== window.scrollX) {
 
@@ -465,8 +472,10 @@ function throwable(){
                     } else
                     {
                         var c = this.defaults.containment;
-                        this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
-                        console.log(stage);
+                        if(c!=="parent"){
+                            this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
+                            console.log(this.stage);
+                        }
                         return false;
                     }
                     
@@ -484,13 +493,12 @@ function throwable(){
           if ($("body").data('throwable.instance') === undefined) {
                         $("body").data('throwable.instance', true);
                         init();
-                        console.log("instance");
                      }
                      
            var throwableInstance= new throwable();
            
            console.log(throwableInstance);
-                 throwableInstance.setEnv(options);
+                 throwableInstance.setEnv(this,options);
                  
                 var rt= this.each(function(){
                     if($.inArray(this,$.throwableElements)===-1)
