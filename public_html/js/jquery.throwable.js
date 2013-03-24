@@ -91,7 +91,7 @@ function throwable(){
     $.extend(throwable.prototype, {
         defaults: {
              infinitX: false,
-             gravity:{x: 0, y: 1},
+             gravity:{x: 0, y: 0},
              timeStep : 1 / 40,
              hardMaterial : 1,
              containment: "window",
@@ -190,7 +190,6 @@ function throwable(){
                     this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
                 }
             });
-                console.log(this.elements)
              this.defaults = $.extend({}, this.defaults, o);
             console.log(this.defaults)
             // setwalls
@@ -200,13 +199,13 @@ function throwable(){
         // init function
        
         loop: function() {
-            
+            this.applyGravity();
             
             this.delta.X += (0 - this.delta.X) * .5;
             this.delta.Y += (0 - this.delta.Y) * .5;
 
-            world.m_gravity.x = this.defaults.gravity.x * 350 + this.delta.X;
-            world.m_gravity.y = this.defaults.gravity.y * 350 + this.delta.Y;
+//            world.m_gravity.x = this.defaults.gravity.x * 350 + this.delta.X;
+//            world.m_gravity.y = this.defaults.gravity.y * 350 + this.delta.Y;
             if(this.defaults.drag)
                 this.mouseDrag();
             world.Step(this.defaults.timeStep, this.iterations);
@@ -230,6 +229,13 @@ function throwable(){
                 element.style.MozTransform = style;
                 element.style.OTransform = style;
                 element.style.msTransform = style;
+            }
+        },
+        applyGravity:function(){
+            var g=this.defaults.gravity;
+            for (i = 0; i < this.bodies.length; i++) {
+                var ant_gravity = new b2Vec2(350.0*g.x*this.bodies[i].GetMass(),350.0*g.y*this.bodies[i].GetMass());
+                this.bodies[i].ApplyForce(ant_gravity,this.bodies[i].GetCenterPosition())
             }
         },
         getProjectedWidth:function(elem){
@@ -463,7 +469,7 @@ function throwable(){
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
             var _this=this;
-           console.log(options)
+           console.log(options);
           if ($("body").data('throwable.instance') === undefined) {
                         $("body").data('throwable.instance', true);
                         init();
@@ -471,11 +477,17 @@ function throwable(){
                      }
                      
            var throwableInstance= new throwable();
+           
            console.log(throwableInstance);
                  throwableInstance.setEnv(options);
-                return this.each(function(){
-                    throwableInstance.initElem(this);
+                 
+                var rt= this.each(function(){
+                    if($.inArray(this,$.throwableElements)===-1)
+                        throwableInstance.initElem(this);
                });
+               
+                $.merge($.throwableElements,throwableInstance.elements);
+               return rt;
 //           return this.each(function(i) {
 //                if ($(_this).data('throwable.instance') === undefined) {
 //                        $(_this).data('throwable.instance', new throwable());
@@ -492,6 +504,6 @@ function throwable(){
              
         }
     };
- $.throwables=[];   
+ $.throwableElements=[];   
     
 })(jQuery, window, document);
