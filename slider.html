@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>JQuery.throwable</title> 
+                <style>
+                    #demo h2{
+                        position: absolute;
+                        left: 550px;
+                        top:0px;
+                        z-index: 1;
+                        color: blue;
+                    }
+                    #slider{
+                        position: absolute;
+                        height: 400px;
+                        width: 1950px;
+                        left: 5%;
+                        top:50px;
+                        background-color:red;    
+                    }
+                    #img1{
+                        position: absolute;
+                        
+                        height: 400px;
+                        width: 650px;
+                        background-image: url("http://www.luxury-club.fr/images/location-voiture-de-luxe-ferrari-porsche-lamborghini.jpg");
+                        background-size: 650px 400px;
+                    }
+                    #img2{
+                        position: absolute;
+                        left: 650px;
+                        height: 400px;
+                        width: 650px;
+                        background-image: url("http://www.location-voitures-de-luxe.fr/images/commun/location-voiture.jpg");
+                        background-size: 650px 400px;
+                    }
+                    #img3{
+                        position: absolute;
+                        left: 1300px;
+                        height: 400px;
+                        width: 650px;
+                        background-image: url("http://www.luxury-club.fr/images/location-voiture-luxe/lamborghini-gallardo-lp560-spyder.jpg");
+                        background-size: 650px 400px;
+                    }
+                    #sideR{
+                        position: absolute;
+                        z-index: 1;
+                        left: 1000px;
+                        background-color: white;
+                        top:0px;
+                        height: 700px;
+                        width: 600px;
+                        border-left: 1px solid;
+                    }
+                     #sideL{
+                        position: absolute;
+                        z-index: 1;
+                        left: 0px;
+                        background-color: white;
+                        top:0px;
+                        height: 700px;
+                        width: 350px;
+                        border-right: 1px solid;
+                    }
+                </style>
+	</head>
+	<body>
+            <div id="demo">
+                <h2>Demo JQuery.throwable </h2>
+            </div>
+                    <div id="slider">
+                        <div id="img1"  > </div>
+                        <div id="img2"  > </div>
+                        <div id="img3"  > </div>
+                    </div>
+                    <div id="sideR"></div>
+                    <div id="sideL"></div>
+                    <script src="js/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
+                    <script src="js/jquery.throwable.js" type="text/javascript"></script> 
+                    <script>$(document).ready(function () { 
+                        
+                        $("#slider").throwable({containment:[-960,50,2310,450]});
+                        
+                    });</script>
+
+	</body>
+</html>
