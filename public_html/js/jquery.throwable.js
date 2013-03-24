@@ -93,7 +93,7 @@ function throwable(){
              infinitX: false,
              gravity:{x: 0, y: 0},
              timeStep : 1 / 40,
-             hardMaterial : 1000,
+             hardMaterial : 1,
              containment: "window",
              fixed:false,
              drag:true
@@ -118,8 +118,8 @@ function throwable(){
                 });
                 $(element).on('mousedown', this.onElementMouseDown);
                 $(element).on('mouseup', this.onElementMouseUp);
-
-                this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false,numInstance,numInstance));
+                
+                this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false,numInstance,Math.pow(2,50)-1));
 
                 // Clean position dependencies
                 while (element.offsetParent) {
@@ -142,7 +142,7 @@ function throwable(){
                 else{
                     var p=elem.parent();
                     this.stage={X:p.position().left,Y:p.position().top,Width:p.width(),Height:p.height()};
-                    console.log(this.stage)
+                    console.log(this.stage);
                 }
             }
             // setwalls
