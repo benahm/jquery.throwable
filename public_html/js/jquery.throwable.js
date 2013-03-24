@@ -76,15 +76,16 @@ function throwable(){
              gravity:{x: 0, y: 1},
              timeStep : 1 / 25,
              hardMaterial : 1,
-             containment: [0,0,stage.Width,stage.Height],
+             containment: "window",
+             fixed:false,
              drag:true
         },
         /**
          * initElem initialize element
          */
-        initElem: function(o, elem) {
+        initElem: function(elem) {
 
-            this.defaults = $.extend({}, this.defaults, o);
+           
                 // Get box2d elements
                 var property=this.getElementProperties(elem);
                 properties.push(property);
@@ -111,13 +112,17 @@ function throwable(){
 
         },
         
-        setEnv: function() {
+        setEnv: function(o) {
+                console.log(elements)
+             this.defaults = $.extend({}, this.defaults, o);
+            console.log(this.defaults)
             // setwalls
             this.setWalls();
            
         },
         // init function
         init:function(){
+            
             var _this = this;
             this.getBrowserDimensions();
             
@@ -271,7 +276,7 @@ function throwable(){
                 boxSd.categoryBits=categoryBits;
                 boxSd.maskBits=maskBits;
             }
-            console.log(categoryBits+"+"+maskBits+": "+boxSd.maskBits+"+"+boxSd.categoryBits);
+            //console.log(categoryBits+"+"+maskBits+": "+boxSd.maskBits+"+"+boxSd.categoryBits);
             if (!fixed)
                 boxSd.density = 1.0;
 
@@ -384,8 +389,7 @@ function throwable(){
                 walls.right = null;
                 walls.bottom = null;
             }
-            console.log(this.defaults.containment);
-            var x1=this.defaults.containment[0],y1=this.defaults.containment[1],x2=this.defaults.containment[2],y2=this.defaults.containment[3];
+            var x1=stage.X,y1=stage.Y,x2=stage.Width,y2=stage.Height;
             walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness);
             walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
             walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
@@ -409,45 +413,46 @@ function throwable(){
 
             return {X: x, Y: y, Width: width, Height: height};
         },
-        getBrowserDimensions: function() {
-            var changed = false;
-            if (stage.X !== window.scrollX) {
+            getBrowserDimensions: function() {
+                if (this.defaults.containment === "window" || this.defaults.fixed === true) {
+                    var changed = false;
+                    if (stage.X !== window.scrollX) {
 
-                delta.X = (window.scrollX - stage.X) * 50;
-                stage.X = window.scrollX;
-                changed = true;
+                        delta.X = (window.scrollX - stage.X) * 50;
+                        stage.X = window.scrollX;
+                        changed = true;
+                    }
+
+                    if (stage.Y !== window.scrollY) {
+
+                        delta.Y = (window.scrollY - stage.Y) * 50;
+                        stage.Y = window.scrollY;
+                        changed = true;
+                    }
+
+                    if (stage.Width !== window.innerWidth + window.scrollX) {
+
+                        stage.Width = window.innerWidth + window.scrollX;
+                        changed = true;
+                    }
+
+                    if (stage.Height !== window.innerHeight + window.scrollY) {
+
+                        stage.Height = window.innerHeight + window.scrollY;
+                        changed = true;
+                    }
+                    return changed;
+                } else
+                    return false;
             }
 
-            if (stage.Y !== window.scrollY) {
-
-                delta.Y = (window.scrollY - stage.Y) * 50;
-                stage.Y = window.scrollY;
-                changed = true;
-            }
-
-            if (stage.Width !== window.innerWidth + window.scrollX) {
-
-                stage.Width = window.innerWidth + window.scrollX;
-                changed = true;
-            }
-
-            if (stage.Height !== window.innerHeight + window.scrollY) {
-
-                stage.Height = window.innerHeight + window.scrollY;
-                changed = true;
-            }
-            
-            this.defaults.containment=[stage.X,stage.Y,stage.Width,stage.Height];
-            return changed;
-        }
-
-    });
+        });
 };
 
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
             var _this=this;
-           console.log("-----"+options)
+           console.log(options)
           if ($("body").data('throwable.instance') === undefined) {
                         $("body").data('throwable.instance', new throwable());
                         $("body").data('throwable.instance').init();
@@ -455,9 +460,9 @@ function throwable(){
                      }
            var throwableInstance=$("body").data('throwable.instance');
   
-                 throwableInstance.setEnv();
+                 throwableInstance.setEnv(options);
                 return this.each(function(){
-                    throwableInstance.initElem(options,this);
+                    throwableInstance.initElem(this);
                });
 //           return this.each(function(i) {
 //                if ($(_this).data('throwable.instance') === undefined) {
