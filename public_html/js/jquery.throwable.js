@@ -52,465 +52,470 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
     var world;
 
 
- function init(){
-            
-            
-             // init box2d
-            worldAABB = new b2AABB();
-            worldAABB.minVertex.Set(-3000, -3000);
-            worldAABB.maxVertex.Set(window.innerWidth + 3000, window.innerHeight + 3000);
+    function init() {
 
-            world = new b2World(worldAABB, new b2Vec2(0, 0), true);
 
-        }
+        // init box2d
+        worldAABB = new b2AABB();
+        worldAABB.minVertex.Set(-3000, -3000);
+        worldAABB.maxVertex.Set(window.innerWidth + 3000, window.innerHeight + 3000);
 
-var bool=false;
-var wall_thickness = 100;
-var numInstance=1;
-function throwable(){
-    
-    this.delta = {X:0, Y:0};
-    this.stage = {X:window.screenX, Y:window.screenY, Width:window.innerWidth, Height:window.innerHeight};
-    this.walls ={left:null,right:null,top:null,bottom:null};
-    this.isRunning = false;
-    this.isMouseDown = false;
-    this.mouse = {x: 0, y: 0};
-    
-    this.iterations = 1;
-    
-    this.wallsSetted = false;
-    
-    this.mouseJoint;
-   
+        world = new b2World(worldAABB, new b2Vec2(0, 0), true);
 
-    this.elements = [];
-    this.bodies = [];
-    this.properties = [];
-    if(!bool){
-    $.extend(throwable.prototype, {
-        defaults: {
-             infinitX: false,
-             gravity:{x: 0, y: 0},
-             timeStep : 1 / 40,
-             hardMaterial : 1,
-             containment: "window",
-             shape:"rectangle", // TODO : support circle
-             fixed:false,
-             drag:true
-        },
-        /**
-         * initElem initialize element
-         */
-        initElem: function(elem) {
+    }
 
-           
-                // Get box2d elements
-                var property=this.getElementProperties(elem);
-                this.properties.push(property);
+    var bool = false;
+    var wall_thickness = 100;
+    var numInstance = 1;
+    function throwable() {
+        this.numInstance;
+        this.delta = {X: 0, Y: 0};
+        this.stage = {X: window.screenX, Y: window.screenY, Width: window.innerWidth, Height: window.innerHeight};
+        this.walls = {left: null, right: null, top: null, bottom: null};
+        this.isRunning = false;
+        this.isMouseDown = false;
+        this.mouse = {x: 0, y: 0};
 
-                var element = elem;
-                var $elem = $(element);
-                $elem.css({
-                    "position": "absolute",
-                    "left":property.X + 'px',
-                    "top" : property.Y + 'px',
-                    "width": property.Width + 'px'
-                });
-                $(element).on('mousedown', this.onElementMouseDown);
-                $(element).on('mouseup', this.onElementMouseUp);
-                
-                
-                this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false,numInstance,Math.pow(2,50)-1));
+        this.iterations = 1;
 
-                // Clean position dependencies
-                while (element.offsetParent) {
-                    element = element.offsetParent;
-                    element.style.position = 'static';
-                }
-                this.elements.push(elem);
+        this.wallsSetted = false;
 
-        },
+        this.mouseJoint;
+
+        this.elements = [];
+        this.bodies = [];
+        this.properties = [];
         
-        setEnv: function(elem,o) {
-            var _this = this;
-            numInstance*=2;
-            this.getBrowserDimensions();
-            this.defaults = $.extend({}, this.defaults, o);
-            if(this.defaults.containment!=="window"){
-                var c=this.defaults.containment;
-                if(c!=="parent")
-                    this.stage={X:c[0],Y:c[1],Width:c[2],Height:c[3]};
-                else{
-                    var p=elem.parent();
-                    this.stage={X:p.position().left,Y:p.position().top,Width:p.width(),Height:p.height()};
-                    console.log(this.stage);
-                }
-            }
-            // setwalls
-            this.setWalls(numInstance);
-            $(window).scroll(function (){
-                     _this.getBrowserDimensions();
-                     _this.setWalls();
-            });
-            $(document).on('mousedown', function(event) {
+        if (!bool) {
+            $.extend(throwable.prototype, {
+                defaults: {
+                    infinitX: false,
+                    gravity: {x: 0, y: 0},
+                    timeStep: 1 / 40,
+                    hardMaterial: 1,
+                    containment: "window",
+                    shape: "rectangle", // TODO : support circle
+                    fixed: false,
+                    drag: true
+                },
+                /**
+                 * initElem initialize element
+                 */
+                initElem: function(elem) {
 
-                _this.isMouseDown = true;
+                    // Get box2d elements
+                    var property = this.getElementProperties(elem);
+                    this.properties.push(property);
 
-            });
-            $(document).on('mouseup', function(event) {
+                    var element = elem;
+                    var $elem = $(element);
+                    $elem.css({
+                        "position": "absolute",
+                        "left": property.X + 'px',
+                        "top": property.Y + 'px',
+                        "width": property.Width + 'px'
+                    });
+                    $(element).on('mousedown', this.onElementMouseDown);
+                    $(element).on('mouseup', this.onElementMouseUp);
 
-                _this.isMouseDown = false;
+                    this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false, numInstance, Math.pow(2, 50) - 1));
 
-            });
-            $(document).on('mousemove', function(event) {
-                if (!_this.isRunning)
-                    _this.run();
-
-                _this.mouse.x = event.clientX;
-                _this.mouse.y = event.clientY;
-            });
-
-            $(document).on('touchstart', function(event) {
-                if (event.touches.length == 1) {
-                    
-                    if (!_this.isRunning) {
-                        _this.run();
+                    // Clean position dependencies
+                    while (element.offsetParent) {
+                        element = element.offsetParent;
+                        element.style.position = 'static';
                     }
-                    _this.mouse.x = event.touches[0].pageX;
-                    _this.mouse.y = event.touches[0].pageY;
-                    _this.isMouseDown = true;
-                }
-            });
-            $(document).on('touchmove', function(event) {
+                    this.elements.push(elem);
 
-                if (event.touches.length == 1) {
-                    event.preventDefault();
-                    _this.mouse.x = event.touches[0].pageX;
-                    _this.mouse.y = event.touches[0].pageY;
-                }
+                },
+                setEnv: function(elem, o) {
+                    var _this = this;
+                    numInstance *= 2;
+                    this.numInstance = numInstance;
+                    this.getBrowserDimensions();
+                    this.defaults = $.extend({}, this.defaults, o);
+                    if (this.defaults.containment !== "window") {
+                        var c = this.defaults.containment;
+                        if (c !== "parent")
+                            this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
+                        else {
+                            var p = elem.parent();
+                            this.stage = {X: p.position().left, Y: p.position().top, Width: p.width(), Height: p.height()};
+                            console.log(this.stage);
+                        }
+                    } else {
+                        $(window).scroll(function() {
+                            _this.handleScrollOrResize();
+                        });
+                        $(window).resize(function() {
+                            _this.handleScrollOrResize();
+                        });
+                    }
+                    // setwalls
+                    this.setWalls(numInstance);
 
-            });
-            $(document).on('touchend', function(event) {
+                    $(document).on('mousedown', function(event) {
 
-                if (event.touches.length == 0) {
+                        _this.isMouseDown = true;
 
-                    _this.isMouseDown = false;
-                }
-            });
+                    });
+                    $(document).on('mouseup', function(event) {
 
-            $(window).on('deviceorientation', function(event) {
-                if (event.beta) {
-                    this.defaults.gravity.x = Math.sin(event.gamma * Math.PI / 180);
-                    this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
-                }
-            });
-             
-           
-           
-        },
-        // init function
-       
-        loop: function() {
-            this.applyGravity();
-            
-            
-            this.delta.X += (0 - this.delta.X) * .5;
-            this.delta.Y += (0 - this.delta.Y) * .5;
+                        _this.isMouseDown = false;
+
+                    });
+                    $(document).on('mousemove', function(event) {
+                        if (!_this.isRunning)
+                            _this.run();
+
+                        _this.mouse.x = event.clientX;
+                        _this.mouse.y = event.clientY;
+                    });
+
+                    $(document).on('touchstart', function(event) {
+                        if (event.touches.length == 1) {
+
+                            if (!_this.isRunning) {
+                                _this.run();
+                            }
+                            _this.mouse.x = event.touches[0].pageX;
+                            _this.mouse.y = event.touches[0].pageY;
+                            _this.isMouseDown = true;
+                        }
+                    });
+                    $(document).on('touchmove', function(event) {
+
+                        if (event.touches.length == 1) {
+                            event.preventDefault();
+                            _this.mouse.x = event.touches[0].pageX;
+                            _this.mouse.y = event.touches[0].pageY;
+                        }
+
+                    });
+                    $(document).on('touchend', function(event) {
+
+                        if (event.touches.length == 0) {
+
+                            _this.isMouseDown = false;
+                        }
+                    });
+
+                    $(window).on('deviceorientation', function(event) {
+                        if (event.beta) {
+                            this.defaults.gravity.x = Math.sin(event.gamma * Math.PI / 180);
+                            this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
+                        }
+                    });
+
+
+
+                },
+                // init function
+
+                loop: function() {
+                    this.applyGravity();
+
+
+                    this.delta.X += (0 - this.delta.X) * .5;
+                    this.delta.Y += (0 - this.delta.Y) * .5;
 
 //            world.m_gravity.x = this.defaults.gravity.x * 350 + this.delta.X;
 //            world.m_gravity.y = this.defaults.gravity.y * 350 + this.delta.Y;
-            if(this.defaults.drag)
-                this.mouseDrag();
-            world.Step(this.defaults.timeStep, this.iterations);
+                    if (this.defaults.drag)
+                        this.mouseDrag();
+                    world.Step(this.defaults.timeStep, this.iterations);
 
-            for (i = 0; i < this.elements.length; i++) {
+                    for (i = 0; i < this.elements.length; i++) {
 
-                var body = this.bodies[i];
-                var element = this.elements[i];
-                
-                element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
-                element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
-                if(i===1){
-                 //console.log($(element).position().left -(stage.Width - properties[i].Width ))
-                 //console.log(this.getProjectedHeight($(element)));
-                }
-                 //if($(element).position().left $(document).width()) alert("out left");
-                var style = 'rotate(' + (body.m_rotation0 * 57.2957795) + 'deg)';
+                        var body = this.bodies[i];
+                        var element = this.elements[i];
 
-                element.style.transform = style;
-                element.style.WebkitTransform = style + ' translateZ(0)'; // Force HW Acceleration
-                element.style.MozTransform = style;
-                element.style.OTransform = style;
-                element.style.msTransform = style;
-            }
-        },
-        applyGravity:function(){
-            var g=this.defaults.gravity;
-            for (i = 0; i < this.bodies.length; i++) {
-                var ant_gravity = new b2Vec2(350.0*g.x*this.bodies[i].GetMass(),350.0*g.y*this.bodies[i].GetMass());
-                this.bodies[i].ApplyForce(ant_gravity,this.bodies[i].GetCenterPosition())
-            }
-        },
-        applyImpulse:function(){
-            // TODO applyImpulse
-        },
-        getProjectedWidth:function(elem){
-            var rotationAngle=this.getRotation(elem);
-            return  elem.width()*Math.cos(rotationAngle) + elem.height()*Math.sin(rotationAngle); 
-        },
-        getProjectedHeight:function(elem){
-            var rotationAngle=this.getRotation(elem);
-            return  elem.width()*Math.sin(rotationAngle) + elem.height()*Math.cos(rotationAngle); 
-        },
-        getRotation: function(obj) {
-            var matrix = obj.css("-webkit-transform") ||
-                    obj.css("-moz-transform") ||
-                    obj.css("-ms-transform") ||
-                    obj.css("-o-transform") ||
-                    obj.css("transform");
-            if (matrix !== 'none') {
-                var values = matrix.split('(')[1].split(')')[0].split(',');
-                var a = values[0];
-                var b = values[1];
-                var angle = Math.atan2(b, a);
-            } else {
-                var angle = 0;
-            }
-            return angle;
-        },
-        run: function() {
-            var _this=this;
-            this.isRunning = true;
-            setInterval(function() {
-                _this.loop();
-               
-            }, 25);
+                        element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
+                        element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
+                        if (i === 1) {
+                            //console.log($(element).position().left -(stage.Width - properties[i].Width ))
+                            //console.log(this.getProjectedHeight($(element)));
+                        }
+                        //if($(element).position().left $(document).width()) alert("out left");
+                        var style = 'rotate(' + (body.m_rotation0 * 57.2957795) + 'deg)';
 
-        },
-        
-        //
-        onElementMouseDown: function(event) {
-            event.preventDefault();
-        },
-        onElementMouseUp: function(event) {
-            event.preventDefault();
-        },
-                
-        // .. BOX2D UTILS
-        createBox: function(world, x, y, width, height, fixed,categoryBits,maskBits,element) {
+                        element.style.transform = style;
+                        element.style.WebkitTransform = style + ' translateZ(0)'; // Force HW Acceleration
+                        element.style.MozTransform = style;
+                        element.style.OTransform = style;
+                        element.style.msTransform = style;
+                    }
+                },
+                applyGravity: function() {
+                    var g = this.defaults.gravity;
+                    for (i = 0; i < this.bodies.length; i++) {
+                        var ant_gravity = new b2Vec2(350.0 * g.x * this.bodies[i].GetMass(), 350.0 * g.y * this.bodies[i].GetMass());
+                        this.bodies[i].ApplyForce(ant_gravity, this.bodies[i].GetCenterPosition())
+                    }
+                },
+                applyImpulse: function() {
+                    // TODO applyImpulse
+                },
+                handleScrollOrResize: function() {
+                    this.getBrowserDimensions();
+                    console.log(this.numInstance + "+");
+                    this.setWalls(this.numInstance);
+                },
+                getProjectedWidth: function(elem) {
+                    var rotationAngle = this.getRotation(elem);
+                    return  elem.width() * Math.cos(rotationAngle) + elem.height() * Math.sin(rotationAngle);
+                },
+                getProjectedHeight: function(elem) {
+                    var rotationAngle = this.getRotation(elem);
+                    return  elem.width() * Math.sin(rotationAngle) + elem.height() * Math.cos(rotationAngle);
+                },
+                getRotation: function(obj) {
+                    var matrix = obj.css("-webkit-transform") ||
+                            obj.css("-moz-transform") ||
+                            obj.css("-ms-transform") ||
+                            obj.css("-o-transform") ||
+                            obj.css("transform");
+                    if (matrix !== 'none') {
+                        var values = matrix.split('(')[1].split(')')[0].split(',');
+                        var a = values[0];
+                        var b = values[1];
+                        var angle = Math.atan2(b, a);
+                    } else {
+                        var angle = 0;
+                    }
+                    return angle;
+                },
+                run: function() {
+                    var _this = this;
+                    this.isRunning = true;
+                    setInterval(function() {
+                        _this.loop();
 
-            if (typeof(fixed) === 'undefined')
-                fixed = true;
+                    }, 25);
 
-            var boxSd = new b2BoxDef();
-            if(categoryBits && maskBits){
-                boxSd.categoryBits=categoryBits;
-                boxSd.maskBits=maskBits;
-            }
-            //console.log(categoryBits+"+"+maskBits+": "+boxSd.maskBits+"+"+boxSd.categoryBits);
-            if (!fixed)
-                boxSd.density = 1.0;
+                },
+                //
+                onElementMouseDown: function(event) {
+                    event.preventDefault();
+                },
+                onElementMouseUp: function(event) {
+                    event.preventDefault();
+                },
+                // .. BOX2D UTILS
+                createBox: function(world, x, y, width, height, fixed, categoryBits, maskBits, element) {
 
-            boxSd.extents.Set(width, height);
+                    if (typeof(fixed) === 'undefined')
+                        fixed = true;
 
-            var boxBd = new b2BodyDef();
-            boxBd.AddShape(boxSd);
-            boxBd.position.Set(x, y);
-            boxBd.userData = {element: element};
+                    var boxSd = new b2BoxDef();
+                    if (categoryBits && maskBits) {
+                        boxSd.categoryBits = categoryBits;
+                        boxSd.maskBits = maskBits;
+                    }
+                    //console.log(categoryBits+"+"+maskBits+": "+boxSd.maskBits+"+"+boxSd.categoryBits);
+                    if (!fixed)
+                        boxSd.density = 1.0;
 
-            return world.CreateBody(boxBd);
-        }, createCircle: function(world, x, y,radius, fixed, element) {
+                    boxSd.extents.Set(width, height);
 
-            if (typeof(fixed) === 'undefined')
-                fixed = true;
+                    var boxBd = new b2BodyDef();
+                    boxBd.AddShape(boxSd);
+                    boxBd.position.Set(x, y);
+                    boxBd.userData = {element: element};
 
-            var boxSd = new b2CircleDef();
+                    return world.CreateBody(boxBd);
+                }, createCircle: function(world, x, y, radius, fixed, element) {
 
-            if (!fixed)
-                boxSd.density = 1.0;
+                    if (typeof(fixed) === 'undefined')
+                        fixed = true;
 
-            boxSd.radius=radius;
+                    var boxSd = new b2CircleDef();
 
-            var boxBd = new b2BodyDef();
-            boxBd.AddShape(boxSd);
-            boxBd.position.Set(x, y);
-            boxBd.userData = {element: element};
+                    if (!fixed)
+                        boxSd.density = 1.0;
 
-            return world.CreateBody(boxBd);
-        },
-        mouseDrag: function() {
-        
-            // mouse press
-            if (this.isMouseDown && !this.mouseJoint) {
+                    boxSd.radius = radius;
 
-                var body = this.getBodyAtMouse();
+                    var boxBd = new b2BodyDef();
+                    boxBd.AddShape(boxSd);
+                    boxBd.position.Set(x, y);
+                    boxBd.userData = {element: element};
 
-                if (body) {
+                    return world.CreateBody(boxBd);
+                },
+                mouseDrag: function() {
 
-                    var md = new b2MouseJointDef();
-                    md.body1 = world.m_groundBody;
-                    md.body2 = body;
-                    md.target.Set(this.mouse.x + window.scrollX, this.mouse.y +window.scrollY);
-                    md.maxForce = 30000.0 * body.m_mass;
-                    md.timeStep = this.defaults.timeStep;
-                    this.mouseJoint = world.CreateJoint(md);
-                    body.WakeUp();
-                }
-            }
+                    // mouse press
+                    if (this.isMouseDown && !this.mouseJoint) {
 
-            // mouse release
-            if (!this.isMouseDown) {
+                        var body = this.getBodyAtMouse();
 
-                if (this.mouseJoint) {
+                        if (body) {
 
-                    world.DestroyJoint(this.mouseJoint);
-                    this.mouseJoint = null;
-                }
-            }
-
-            // mouse move
-            if (this.mouseJoint) {
-
-                var p2 = new b2Vec2(this.mouse.x + window.scrollX, this.mouse.y +window.scrollY);
-                this.mouseJoint.SetTarget(p2);
-            }
-        },
-        getBodyAtMouse: function() {
-
-            // Make a small box.
-            var mousePVec = new b2Vec2();
-            mousePVec.Set(this.mouse.x + window.scrollX, this.mouse.y +window.scrollY);
-            var aabb = new b2AABB();
-            aabb.minVertex.Set(this.mouse.x + window.scrollX - 2, this.mouse.y +window.scrollY- 2);
-            aabb.maxVertex.Set(this.mouse.x + window.scrollX + 2, this.mouse.y+window.scrollY + 2);
-
-            // Query the world for overlapping shapes.
-            var k_maxCount = 10;
-            var shapes = [];
-            var count = world.Query(aabb, shapes, k_maxCount);
-            var body = null;
-
-            for (var i = 0; i < count; i++) {
-
-                if (shapes[i].m_body.IsStatic() === false) {
-
-                    if (shapes[i].TestPoint(mousePVec)) {
-                        var tmpBody= shapes[i].m_body;
-                        if($.inArray(tmpBody,this.bodies)!==-1){
-                            body=tmpBody;
-                            break;
+                            var md = new b2MouseJointDef();
+                            md.body1 = world.m_groundBody;
+                            md.body2 = body;
+                            md.target.Set(this.mouse.x + window.scrollX, this.mouse.y + window.scrollY);
+                            md.maxForce = 30000.0 * body.m_mass;
+                            md.timeStep = this.defaults.timeStep;
+                            this.mouseJoint = world.CreateJoint(md);
+                            body.WakeUp();
                         }
                     }
-                }
-            }
-            return body;
-        },
-        // create contaimnent walls        
-        setWalls: function(i) {
 
-            if (this.wallsSetted) {
+                    // mouse release
+                    if (!this.isMouseDown) {
 
-                world.DestroyBody(this.walls.left);
-                world.DestroyBody(this.walls.top);
-                world.DestroyBody(this.walls.right);
-                world.DestroyBody(this.walls.bottom);
+                        if (this.mouseJoint) {
 
-                this.walls.left = null;
-                this.walls.top = null;
-                this.walls.right = null;
-                this.walls.bottom = null;
-            }
-            var x1=this.stage.X,y1=this.stage.Y,x2=this.stage.Width,y2=this.stage.Height;
-            this.walls.top = this.createBox(world, (x1+x2)/ 2, y1-wall_thickness,x2-x1, wall_thickness,true,i,i);
-            this.walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness,true,i,i);
-            this.walls.left = this.createBox(world, x1 -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
-            this.walls.right = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1,true,i,i);
-            this.wallsSetted = true;
-
-        },
-        
-        // .. UTILS
-        getElementProperties: function(element) {
-
-            var x = 0;
-            var y = 0;
-            var width = element.offsetWidth;
-            var height = element.offsetHeight;
-            do {
-                x += element.offsetLeft;
-                y += element.offsetTop;
-
-            } while (element = element.offsetParent);
-
-            return {X: x, Y: y, Width: width, Height: height};
-        },
-            getBrowserDimensions: function() {
-                if (this.defaults.containment === "window"  || this.defaults.containment === "parent" ||this.defaults.fixed === true) {
-                    var changed = false;
-                    if (this.stage.X !== window.scrollX) {
-
-                        this.delta.X = (window.scrollX - this.stage.X) * 50;
-                        this.stage.X = window.scrollX;
-                        changed = true;
+                            world.DestroyJoint(this.mouseJoint);
+                            this.mouseJoint = null;
+                        }
                     }
 
-                    if (this.stage.Y !== window.scrollY) {
+                    // mouse move
+                    if (this.mouseJoint) {
 
-                        this.delta.Y = (window.scrollY - this.stage.Y) * 50;
-                        this.stage.Y = window.scrollY;
-                        changed = true;
+                        var p2 = new b2Vec2(this.mouse.x + window.scrollX, this.mouse.y + window.scrollY);
+                        this.mouseJoint.SetTarget(p2);
                     }
+                },
+                getBodyAtMouse: function() {
 
-                    if (this.stage.Width !== window.innerWidth + window.scrollX) {
+                    // Make a small box.
+                    var mousePVec = new b2Vec2();
+                    mousePVec.Set(this.mouse.x + window.scrollX, this.mouse.y + window.scrollY);
+                    var aabb = new b2AABB();
+                    aabb.minVertex.Set(this.mouse.x + window.scrollX - 2, this.mouse.y + window.scrollY - 2);
+                    aabb.maxVertex.Set(this.mouse.x + window.scrollX + 2, this.mouse.y + window.scrollY + 2);
 
-                        this.stage.Width = window.innerWidth + window.scrollX;
-                        changed = true;
+                    // Query the world for overlapping shapes.
+                    var k_maxCount = 10;
+                    var shapes = [];
+                    var count = world.Query(aabb, shapes, k_maxCount);
+                    var body = null;
+
+                    for (var i = 0; i < count; i++) {
+
+                        if (shapes[i].m_body.IsStatic() === false) {
+
+                            if (shapes[i].TestPoint(mousePVec)) {
+                                var tmpBody = shapes[i].m_body;
+                                if ($.inArray(tmpBody, this.bodies) !== -1) {
+                                    body = tmpBody;
+                                    break;
+                                }
+                            }
+                        }
                     }
+                    return body;
+                },
+                // create contaimnent walls        
+                setWalls: function(i) {
 
-                    if (this.stage.Height !== window.innerHeight + window.scrollY) {
+                    if (this.wallsSetted) {
 
-                        this.stage.Height = window.innerHeight + window.scrollY;
-                        changed = true;
+                        world.DestroyBody(this.walls.left);
+                        world.DestroyBody(this.walls.top);
+                        world.DestroyBody(this.walls.right);
+                        world.DestroyBody(this.walls.bottom);
+
+                        this.walls.left = null;
+                        this.walls.top = null;
+                        this.walls.right = null;
+                        this.walls.bottom = null;
                     }
+                    var x1 = this.stage.X, y1 = this.stage.Y, x2 = this.stage.Width, y2 = this.stage.Height;
+                    this.walls.top = this.createBox(world, (x1 + x2) / 2, y1 - wall_thickness, x2 - x1, wall_thickness, true, i, i);
+                    this.walls.bottom = this.createBox(world, (x1 + x2) / 2, y2 + wall_thickness, x2 - x1, wall_thickness, true, i, i);
+                    this.walls.left = this.createBox(world, x1 - wall_thickness, (y2 + y1) / 2, wall_thickness, y2 - y1, true, i, i);
+                    this.walls.right = this.createBox(world, x2 + wall_thickness, (y2 + y1) / 2, wall_thickness, y2 - y1, true, i, i);
+                    this.wallsSetted = true;
+
+                },
+                // .. UTILS
+                getElementProperties: function(element) {
+
+                    var x = 0;
+                    var y = 0;
+                    var width = element.offsetWidth;
+                    var height = element.offsetHeight;
+                    do {
+                        x += element.offsetLeft;
+                        y += element.offsetTop;
+
+                    } while (element = element.offsetParent);
+
+                    return {X: x, Y: y, Width: width, Height: height};
+                },
+                getBrowserDimensions: function() {
+                    if (this.defaults.containment === "window" || this.defaults.containment === "parent" || this.defaults.fixed === true) {
+                        var changed = false;
+                        if (this.stage.X !== window.scrollX) {
+
+                            this.delta.X = (window.scrollX - this.stage.X) * 50;
+                            this.stage.X = window.scrollX;
+                            changed = true;
+                        }
+
+                        if (this.stage.Y !== window.scrollY) {
+
+                            this.delta.Y = (window.scrollY - this.stage.Y) * 50;
+                            this.stage.Y = window.scrollY;
+                            changed = true;
+                        }
+
+                        if (this.stage.Width !== window.innerWidth + window.scrollX) {
+
+                            this.stage.Width = window.innerWidth + window.scrollX;
+                            changed = true;
+                        }
+
+                        if (this.stage.Height !== window.innerHeight + window.scrollY) {
+
+                            this.stage.Height = window.innerHeight + window.scrollY;
+                            changed = true;
+                        }
                         return changed;
                     } else
                     {
                         var c = this.defaults.containment;
-                        if(c!=="parent"){
+                        if (c !== "parent") {
                             this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
                             console.log(this.stage);
                         }
                         return false;
                     }
-                    
-            }
 
-        });
-        bool=true;
+                }
+
+            });
+            bool = true;
+        }
     }
-};
+    ;
 
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
-            var _this=this;
-           console.log(options);
-          if ($("body").data('throwable.instance') === undefined) {
-                        $("body").data('throwable.instance', true);
-                        init();
-                     }
-                     
-           var throwableInstance= new throwable();
-           
-           console.log(throwableInstance);
-                 throwableInstance.setEnv(this,options);
-                 
-                var rt= this.each(function(){
-                    if($.inArray(this,$.throwableElements)===-1)
-                        throwableInstance.initElem(this);
-               });
-               
-                $.merge($.throwableElements,throwableInstance.elements);
-               return rt;
+            var _this = this;
+            console.log(options);
+            if ($("body").data('throwable.instance') === undefined) {
+                $("body").data('throwable.instance', true);
+                init();
+            }
+
+            var throwableInstance = new throwable();
+
+            console.log(throwableInstance);
+            throwableInstance.setEnv(this, options);
+
+            var rt = this.each(function() {
+                if ($.inArray(this, $.throwableElements) === -1)
+                    throwableInstance.initElem(this);
+            });
+
+            $.merge($.throwableElements, throwableInstance.elements);
+            return rt;
 //           return this.each(function(i) {
 //                if ($(_this).data('throwable.instance') === undefined) {
 //                        $(_this).data('throwable.instance', new throwable());
@@ -524,9 +529,9 @@ function throwable(){
 //
 //                    }
 //            });
-             
+
         }
     };
- $.throwableElements=[];   
-    
+    $.throwableElements = [];
+
 })(jQuery, window, document);
