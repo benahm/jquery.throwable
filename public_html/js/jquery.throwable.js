@@ -95,6 +95,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     hardMaterial: 1,
                     containment: "window",
                     shape: "box", // TODO : support circle
+                    impulse:null,
                     fixed: false,
                     drag: true
                 },
@@ -118,10 +119,15 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     $(element).on('mousedown', this.onElementMouseDown);
                     $(element).on('mouseup', this.onElementMouseUp);
                     
+                    var body;
                     if (this.defaults.shape === "box")
-                        this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false, numInstance, Math.pow(2, 50) - 1));
+                        body=this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false, numInstance, Math.pow(2, 50) - 1);
                     else
-                        this.bodies.push(this.createCircle(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), Math.max($elem.width() / 2, $elem.height() / 2), false, numInstance, Math.pow(2, 50) - 1));
+                        body=this.createCircle(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), Math.max($elem.width() / 2, $elem.height() / 2), false, numInstance, Math.pow(2, 50) - 1);
+                    if(this.defaults.impulse){
+                        this.applyImpulse(body);
+                    }
+                    this.bodies.push(body);
                     // Clean position dependencies
                     while (element.offsetParent) {
                         element = element.offsetParent;
@@ -129,6 +135,9 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     }
                     this.elements.push(elem);
 
+                },
+                applyOptions:function(i){
+                    
                 },
                 setEnv: function(elem, o) {
                     var _this = this;
@@ -219,8 +228,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     this.delta.X += (0 - this.delta.X) * .5;
                     this.delta.Y += (0 - this.delta.Y) * .5;
 
-//            world.m_gravity.x = this.defaults.gravity.x * 350 + this.delta.X;
-//            world.m_gravity.y = this.defaults.gravity.y * 350 + this.delta.Y;
+
                     if (this.defaults.drag)
                         this.mouseDrag();
                     world.Step(this.defaults.timeStep, this.iterations);
@@ -250,11 +258,13 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     var g = this.defaults.gravity;
                     for (i = 0; i < this.bodies.length; i++) {
                         var ant_gravity = new b2Vec2(350.0 * g.x * this.bodies[i].GetMass(), 350.0 * g.y * this.bodies[i].GetMass());
-                        this.bodies[i].ApplyForce(ant_gravity, this.bodies[i].GetCenterPosition())
+                        this.bodies[i].ApplyForce(ant_gravity, this.bodies[i].GetCenterPosition());
                     }
                 },
-                applyImpulse: function() {
-                    // TODO applyImpulse
+                applyImpulse: function(body) {
+                        var f=this.defaults.impulse.f,p=this.defaults.impulse.p;
+                        var ant_gravity = new b2Vec2(f * p.x * body.GetMass(), f * p.y * body.GetMass());
+                        body.ApplyImpulse(ant_gravity,body.GetCenterPosition());
                 },
                 handleScrollOrResize: function() {
                     this.getBrowserDimensions();
@@ -515,7 +525,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
             throwableInstance.setEnv(this, options);
 
             var rt = this.each(function() {
-                if ($.inArray(this, $.throwableElements) === -1)
+                var i=$.inArray(this, $.throwableElements)
+                if ( i=== -1)
                     throwableInstance.initElem(this);
             });
 
