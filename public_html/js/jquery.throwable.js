@@ -57,8 +57,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
         // init box2d
         worldAABB = new b2AABB();
-        worldAABB.minVertex.Set(-3000, -3000);
-        worldAABB.maxVertex.Set(window.innerWidth + 3000, window.innerHeight + 3000);
+        worldAABB.minVertex.Set(-5000, -5000);
+        worldAABB.maxVertex.Set(window.innerWidth + 5000, window.innerHeight + 5000);
 
         world = new b2World(worldAABB, new b2Vec2(0, 0), true);
 
@@ -206,8 +206,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
                         }
                     });
-
-
 
                 },
                 // init function
