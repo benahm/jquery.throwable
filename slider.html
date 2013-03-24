@@ -5,6 +5,9 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<title>JQuery.throwable</title> 
                 <style>
+					body{
+						background-image: url("http://subtlepatterns.com/patterns/textured_paper.png")
+					}
                     #demo h2{
                         position: absolute;
                         left: 550px;
@@ -15,9 +18,9 @@
                     #slider{
                         position: absolute;
                         height: 400px;
-                        width: 1950px;
+                        width: 2600px;
                         left: 5%;
-                        top:50px;
+                        top:70px;
                         background-color:red;    
                     }
                     #img1{
@@ -44,6 +47,14 @@
                         background-image: url("http://www.luxury-club.fr/images/location-voiture-luxe/lamborghini-gallardo-lp560-spyder.jpg");
                         background-size: 650px 400px;
                     }
+					#img4{
+                        position: absolute;
+                        left: 1950px;
+                        height: 400px;
+                        width: 650px;
+                        background-image: url("http://www.location-voiture-luxe.com/data/cover-categ/voitures-de-sport/voitures-de-sport.jpg");
+                        background-size: 650px 400px;
+                    }
                     #sideR{
                         position: absolute;
                         z-index: 1;
@@ -53,7 +64,16 @@
                         height: 700px;
                         width: 600px;
                         border-left: 1px solid;
+						background-image: url("http://subtlepatterns.com/patterns/grey_wash_wall.png");
                     }
+					#sideR #gotoGitHub{
+						top:0px;
+						left:200px;
+						position:absolute;
+						width:149px;
+						height:149px;
+						background-image: url("http://clojure-liberator.github.com/forkme_right_green_007200.png");
+					}
                      #sideL{
                         position: absolute;
                         z-index: 1;
@@ -63,6 +83,7 @@
                         height: 700px;
                         width: 350px;
                         border-right: 1px solid;
+						background-image: url("http://subtlepatterns.com/patterns/grey_wash_wall.png");
                     }
                 </style>
 	</head>
@@ -74,14 +95,17 @@
                         <div id="img1"  > </div>
                         <div id="img2"  > </div>
                         <div id="img3"  > </div>
+						<div id="img4"   > </div>
                     </div>
-                    <div id="sideR"></div>
+                    <div id="sideR">
+						<a id="gotoGitHub" href="https://github.com/benahm/jquery.throwable"></a>
+					</div>
                     <div id="sideL"></div>
                <script src="javascripts/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
                  <script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
                     <script>$(document).ready(function () { 
                         
-                        $("#slider").throwable({containment:[-960,50,2310,450]});
+                        $("#slider").throwable({containment:[-1610,70,2960,470]});
                         
                     });</script>
 
