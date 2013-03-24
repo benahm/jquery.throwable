@@ -22,13 +22,11 @@
  */
 (function($, window, document, undefined) {
     
-
-function throwable(){
-    
     /********* libraries *********/
     
-                /* Based on Alex Arnell's inheritance implementation. */
-              function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,n=new Array(t);while(t--)n[t]=e[t];return n}var Class={create:function(){function n(){this.initialize.apply(this,arguments)}var e=null,t=$A(arguments);if($.isFunction(t[0]))e=t.shift();Object.extend(n,Class.Methods);n.superclass=e;n.subclasses=[];if(e){var r=function(){};r.prototype=e.prototype;n.prototype=new r;e.subclasses.push(n)}for(var i=0;i<t.length;i++)n.addMethods(t[i]);if(!n.prototype.initialize)n.prototype.initialize=this.emptyFunction;n.prototype.constructor=n;return n},emptyFunction:function(){}};Class.Methods={addMethods:function(e){var t=this.superclass&&this.superclass.prototype;var n=Object.keys(e);if(!Object.keys({toString:true}).length)n.push("toString","valueOf");for(var r=0,i=n.length;r<i;r++){var s=n[r],o=e[s];if(t&&$.isFunction(o)&&o.argumentNames().first()=="$super"){var u=o,o=Object.extend(function(e){return function(){return t[e].apply(this,arguments)}}(s).wrap(u),{valueOf:function(){return u},toString:function(){return u.toString()}})}this.prototype[s]=o}return this}};Object.extend=function(e,t){for(var n in t)e[n]=t[n];return e};Object.extend(Object,{inspect:function(e){try{if(Object.isUndefined(e))return"undefined";if(e===null)return"null";return e.inspect?e.inspect():String(e)}catch(t){if(t instanceof RangeError)return"...";throw t}},toJSON:function(e){var t=typeof e;switch(t){case"undefined":case"function":case"unknown":return;case"boolean":return e.toString()}if(e===null)return"null";if(e.toJSON)return e.toJSON();if(Object.isElement(e))return;var n=[];for(var r in e){var i=Object.toJSON(e[r]);if(!Object.isUndefined(i))n.push(r.toJSON()+": "+i)}return"{"+n.join(", ")+"}"},toQueryString:function(e){return $H(e).toQueryString()},toHTML:function(e){return e&&e.toHTML?e.toHTML():String.interpret(e)},keys:function(e){var t=[];for(var n in e)t.push(n);return t},values:function(e){var t=[];for(var n in e)t.push(e[n]);return t},clone:function(e){return Object.extend({},e)},isElement:function(e){return e&&e.nodeType==1},isHash:function(e){return e instanceof Hash},isString:function(e){return typeof e=="string"},isUndefined:function(e){return typeof e=="undefined"}})
+    /* Based on Alex Arnell's inheritance implementation. */
+    
+     function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,n=new Array(t);while(t--)n[t]=e[t];return n}var Class={create:function(){function n(){this.initialize.apply(this,arguments)}var e=null,t=$A(arguments);if($.isFunction(t[0]))e=t.shift();Object.extend(n,Class.Methods);n.superclass=e;n.subclasses=[];if(e){var r=function(){};r.prototype=e.prototype;n.prototype=new r;e.subclasses.push(n)}for(var i=0;i<t.length;i++)n.addMethods(t[i]);if(!n.prototype.initialize)n.prototype.initialize=this.emptyFunction;n.prototype.constructor=n;return n},emptyFunction:function(){}};Class.Methods={addMethods:function(e){var t=this.superclass&&this.superclass.prototype;var n=Object.keys(e);if(!Object.keys({toString:true}).length)n.push("toString","valueOf");for(var r=0,i=n.length;r<i;r++){var s=n[r],o=e[s];if(t&&$.isFunction(o)&&o.argumentNames().first()=="$super"){var u=o,o=Object.extend(function(e){return function(){return t[e].apply(this,arguments)}}(s).wrap(u),{valueOf:function(){return u},toString:function(){return u.toString()}})}this.prototype[s]=o}return this}};Object.extend=function(e,t){for(var n in t)e[n]=t[n];return e};Object.extend(Object,{inspect:function(e){try{if(Object.isUndefined(e))return"undefined";if(e===null)return"null";return e.inspect?e.inspect():String(e)}catch(t){if(t instanceof RangeError)return"...";throw t}},toJSON:function(e){var t=typeof e;switch(t){case"undefined":case"function":case"unknown":return;case"boolean":return e.toString()}if(e===null)return"null";if(e.toJSON)return e.toJSON();if(Object.isElement(e))return;var n=[];for(var r in e){var i=Object.toJSON(e[r]);if(!Object.isUndefined(i))n.push(r.toJSON()+": "+i)}return"{"+n.join(", ")+"}"},toQueryString:function(e){return $H(e).toQueryString()},toHTML:function(e){return e&&e.toHTML?e.toHTML():String.interpret(e)},keys:function(e){var t=[];for(var n in e)t.push(n);return t},values:function(e){var t=[];for(var n in e)t.push(e[n]);return t},clone:function(e){return Object.extend({},e)},isElement:function(e){return e&&e.nodeType==1},isHash:function(e){return e instanceof Hash},isString:function(e){return typeof e=="string"},isUndefined:function(e){return typeof e=="undefined"}})
 
 			if (WebKit = navigator.userAgent.indexOf('AppleWebKit/index.html') > -1) {
 			  $A = function(iterable) {
@@ -51,34 +49,54 @@ function throwable(){
         	///==============================================================================================
                 
     
-    var delta = {X:0, Y:0};
-    var stage = {X:window.screenX, Y:window.screenY, Width:window.innerWidth, Height:window.innerHeight};
-    var walls ={left:null,right:null,top:null,bottom:null};
-    var isRunning = false;
-    var isMouseDown = false;
-
     var worldAABB;
     var world;
-    var iterations = 1;
-    
-    var wall_thickness = 100;
-    var wallsSetted = false;
-    
-    var mouseJoint;
-    var mouse = {x: 0, y: 0};
 
-    var elements = [];
-    var bodies = [];
-    var properties = [];
+
+ function init(){
+            
+            
+             // init box2d
+            worldAABB = new b2AABB();
+            worldAABB.minVertex.Set(-200, -200);
+            worldAABB.maxVertex.Set(window.innerWidth + 2000, window.innerHeight + 2000);
+
+            world = new b2World(worldAABB, new b2Vec2(0, 0), true);
+
+        }
+
+var bool=false;
+var wall_thickness = 100;
+
+function throwable(){
+    
+    this.delta = {X:0, Y:0};
+    this.stage = {X:window.screenX, Y:window.screenY, Width:window.innerWidth, Height:window.innerHeight};
+    this.walls ={left:null,right:null,top:null,bottom:null};
+    this.isRunning = false;
+    this.isMouseDown = false;
+    this.mouse = {x: 0, y: 0};
+    
+    this.iterations = 1;
+    
+    this.wallsSetted = false;
+    
+    this.mouseJoint;
+   
+
+    this.elements = [];
+    this.bodies = [];
+    this.properties = [];
+    if(!bool){
     $.extend(throwable.prototype, {
         defaults: {
              infinitX: false,
              gravity:{x: 0, y: 1},
-             timeStep : 1 / 25,
+             timeStep : 1 / 40,
              hardMaterial : 1,
              containment: "window",
              fixed:false,
-             drag:true
+             drag:false
         },
         /**
          * initElem initialize element
@@ -88,7 +106,7 @@ function throwable(){
            
                 // Get box2d elements
                 var property=this.getElementProperties(elem);
-                properties.push(property);
+                this.properties.push(property);
 
                 var element = elem;
                 var $elem = $(element);
@@ -101,28 +119,18 @@ function throwable(){
                 $(element).on('mousedown', this.onElementMouseDown);
                 $(element).on('mouseup', this.onElementMouseUp);
 
-                bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false));
+                this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2,false));
 
                 // Clean position dependencies
                 while (element.offsetParent) {
                     element = element.offsetParent;
                     element.style.position = 'static';
                 }
-                elements.push(elem);
+                this.elements.push(elem);
 
         },
         
         setEnv: function(o) {
-                console.log(elements)
-             this.defaults = $.extend({}, this.defaults, o);
-            console.log(this.defaults)
-            // setwalls
-            this.setWalls();
-           
-        },
-        // init function
-        init:function(){
-            
             var _this = this;
             this.getBrowserDimensions();
             
@@ -132,39 +140,39 @@ function throwable(){
             });
             $(document).on('mousedown', function(event) {
 
-                isMouseDown = true;
+                _this.isMouseDown = true;
 
             });
             $(document).on('mouseup', function(event) {
 
-                isMouseDown = false;
+                _this.isMouseDown = false;
 
             });
             $(document).on('mousemove', function(event) {
-                if (!isRunning)
+                if (!_this.isRunning)
                     _this.run();
 
-                mouse.x = event.clientX;
-                mouse.y = event.clientY;
+                _this.mouse.x = event.clientX;
+                _this.mouse.y = event.clientY;
             });
 
             $(document).on('touchstart', function(event) {
                 if (event.touches.length == 1) {
                     
-                    if (!isRunning) {
+                    if (!_this.isRunning) {
                         _this.run();
                     }
-                    mouse.x = event.touches[0].pageX;
-                    mouse.y = event.touches[0].pageY;
-                    isMouseDown = true;
+                    _this.mouse.x = event.touches[0].pageX;
+                    _this.mouse.y = event.touches[0].pageY;
+                    _this.isMouseDown = true;
                 }
             });
             $(document).on('touchmove', function(event) {
 
                 if (event.touches.length == 1) {
                     event.preventDefault();
-                    mouse.x = event.touches[0].pageX;
-                    mouse.y = event.touches[0].pageY;
+                    _this.mouse.x = event.touches[0].pageX;
+                    _this.mouse.y = event.touches[0].pageY;
                 }
 
             });
@@ -172,7 +180,7 @@ function throwable(){
 
                 if (event.touches.length == 0) {
 
-                    isMouseDown = false;
+                    _this.isMouseDown = false;
                 }
             });
 
@@ -182,33 +190,34 @@ function throwable(){
                     this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
                 }
             });
-             // init box2d
-            worldAABB = new b2AABB();
-            worldAABB.minVertex.Set(-200, -200);
-            worldAABB.maxVertex.Set(window.innerWidth + 2000, window.innerHeight + 2000);
-
-            world = new b2World(worldAABB, new b2Vec2(0, 0), true);
-
+                console.log(this.elements)
+             this.defaults = $.extend({}, this.defaults, o);
+            console.log(this.defaults)
+            // setwalls
+            this.setWalls();
+           
         },
+        // init function
+       
         loop: function() {
             
             
-            delta.X += (0 - delta.X) * .5;
-            delta.Y += (0 - delta.Y) * .5;
+            this.delta.X += (0 - this.delta.X) * .5;
+            this.delta.Y += (0 - this.delta.Y) * .5;
 
-            world.m_gravity.x = this.defaults.gravity.x * 350 + delta.X;
-            world.m_gravity.y = this.defaults.gravity.y * 350 + delta.Y;
+            world.m_gravity.x = this.defaults.gravity.x * 350 + this.delta.X;
+            world.m_gravity.y = this.defaults.gravity.y * 350 + this.delta.Y;
+            if(this.defaults.drag)
+                this.mouseDrag();
+            world.Step(this.defaults.timeStep, this.iterations);
 
-            this.mouseDrag();
-            world.Step(this.defaults.timeStep, iterations);
+            for (i = 0; i < this.elements.length; i++) {
 
-            for (i = 0; i < elements.length; i++) {
-
-                var body = bodies[i];
-                var element = elements[i];
+                var body = this.bodies[i];
+                var element = this.elements[i];
                 
-                element.style.left = (body.m_position0.x - (properties[i].Width >> 1)) + 'px';
-                element.style.top = (body.m_position0.y - (properties[i].Height >> 1)) + 'px';
+                element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
+                element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
                 if(i===1){
                  //console.log($(element).position().left -(stage.Width - properties[i].Width ))
                  //console.log(this.getProjectedHeight($(element)));
@@ -249,7 +258,7 @@ function throwable(){
         },
         run: function() {
             var _this=this;
-            isRunning = true;
+            this.isRunning = true;
             setInterval(function() {
                 _this.loop();
                
@@ -308,9 +317,9 @@ function throwable(){
             return world.CreateBody(boxBd);
         },
         mouseDrag: function() {
-        if(this.defaults.drag){
+        
             // mouse press
-            if (isMouseDown && !mouseJoint) {
+            if (this.isMouseDown && !this.mouseJoint) {
 
                 var body = this.getBodyAtMouse();
 
@@ -319,40 +328,39 @@ function throwable(){
                     var md = new b2MouseJointDef();
                     md.body1 = world.m_groundBody;
                     md.body2 = body;
-                    md.target.Set(mouse.x + window.scrollX, mouse.y +window.scrollY);
+                    md.target.Set(this.mouse.x + window.scrollX, this.mouse.y +window.scrollY);
                     md.maxForce = 30000.0 * body.m_mass;
                     md.timeStep = this.defaults.timeStep;
-                    mouseJoint = world.CreateJoint(md);
+                    this.mouseJoint = world.CreateJoint(md);
                     body.WakeUp();
                 }
             }
 
             // mouse release
-            if (!isMouseDown) {
+            if (!this.isMouseDown) {
 
-                if (mouseJoint) {
+                if (this.mouseJoint) {
 
-                    world.DestroyJoint(mouseJoint);
-                    mouseJoint = null;
+                    world.DestroyJoint(this.mouseJoint);
+                    this.mouseJoint = null;
                 }
             }
 
             // mouse move
-            if (mouseJoint) {
+            if (this.mouseJoint) {
 
-                var p2 = new b2Vec2(mouse.x + window.scrollX, mouse.y +window.scrollY);
-                mouseJoint.SetTarget(p2);
+                var p2 = new b2Vec2(this.mouse.x + window.scrollX, this.mouse.y +window.scrollY);
+                this.mouseJoint.SetTarget(p2);
             }
-          }
         },
         getBodyAtMouse: function() {
 
             // Make a small box.
             var mousePVec = new b2Vec2();
-            mousePVec.Set(mouse.x + window.scrollX, mouse.y +window.scrollY);
+            mousePVec.Set(this.mouse.x + window.scrollX, this.mouse.y +window.scrollY);
             var aabb = new b2AABB();
-            aabb.minVertex.Set(mouse.x + window.scrollX - 2, mouse.y +window.scrollY- 2);
-            aabb.maxVertex.Set(mouse.x + window.scrollX + 2, mouse.y+window.scrollY + 2);
+            aabb.minVertex.Set(this.mouse.x + window.scrollX - 2, this.mouse.y +window.scrollY- 2);
+            aabb.maxVertex.Set(this.mouse.x + window.scrollX + 2, this.mouse.y+window.scrollY + 2);
 
             // Query the world for overlapping shapes.
             var k_maxCount = 10;
@@ -365,36 +373,37 @@ function throwable(){
                 if (shapes[i].m_body.IsStatic() === false) {
 
                     if (shapes[i].TestPoint(mousePVec)) {
-
-                        body = shapes[i].m_body;
-                        break;
+                        var tmpBody= shapes[i].m_body;
+                        if($.inArray(tmpBody,this.bodies)!==-1){
+                            body=tmpBody;
+                            break;
+                        }
                     }
                 }
             }
-
             return body;
         },
         // create contaimnent walls        
         setWalls: function() {
 
-            if (wallsSetted) {
+            if (this.wallsSetted) {
 
-                world.DestroyBody(walls.left);
-                world.DestroyBody(walls.top);
-                world.DestroyBody(walls.right);
-                world.DestroyBody(walls.bottom);
+                world.DestroyBody(this.walls.left);
+                world.DestroyBody(this.walls.top);
+                world.DestroyBody(this.walls.right);
+                world.DestroyBody(this.walls.bottom);
 
-                walls.left = null;
-                walls.top = null;
-                walls.right = null;
-                walls.bottom = null;
+                this.walls.left = null;
+                this.walls.top = null;
+                this.walls.right = null;
+                this.walls.bottom = null;
             }
-            var x1=stage.X,y1=stage.Y,x2=stage.Width,y2=stage.Height;
-            walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness);
-            walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
-            walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
-            walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
-            wallsSetted = true;
+            var x1=this.stage.X,y1=this.stage.Y,x2=this.stage.Width,y2=this.stage.Height;
+            this.walls.top = this.createBox(world, (x1+x2)/ 2, -wall_thickness,x2-x1, wall_thickness);
+            this.walls.bottom = this.createBox(world, (x1+x2)/ 2, y2 + wall_thickness,x2-x1, wall_thickness);
+            this.walls.right = this.createBox(world, -wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
+            this.walls.left = this.createBox(world, x2 + wall_thickness, (y2+y1) / 2, wall_thickness, y2-y1);
+            this.wallsSetted = true;
 
         },
         
@@ -416,29 +425,29 @@ function throwable(){
             getBrowserDimensions: function() {
                 if (this.defaults.containment === "window" || this.defaults.fixed === true) {
                     var changed = false;
-                    if (stage.X !== window.scrollX) {
+                    if (this.stage.X !== window.scrollX) {
 
-                        delta.X = (window.scrollX - stage.X) * 50;
-                        stage.X = window.scrollX;
+                        this.delta.X = (window.scrollX - this.stage.X) * 50;
+                        this.stage.X = window.scrollX;
                         changed = true;
                     }
 
-                    if (stage.Y !== window.scrollY) {
+                    if (this.stage.Y !== window.scrollY) {
 
-                        delta.Y = (window.scrollY - stage.Y) * 50;
-                        stage.Y = window.scrollY;
+                        this.delta.Y = (window.scrollY - this.stage.Y) * 50;
+                        this.stage.Y = window.scrollY;
                         changed = true;
                     }
 
-                    if (stage.Width !== window.innerWidth + window.scrollX) {
+                    if (this.stage.Width !== window.innerWidth + window.scrollX) {
 
-                        stage.Width = window.innerWidth + window.scrollX;
+                        this.stage.Width = window.innerWidth + window.scrollX;
                         changed = true;
                     }
 
-                    if (stage.Height !== window.innerHeight + window.scrollY) {
+                    if (this.stage.Height !== window.innerHeight + window.scrollY) {
 
-                        stage.Height = window.innerHeight + window.scrollY;
+                        this.stage.Height = window.innerHeight + window.scrollY;
                         changed = true;
                     }
                     return changed;
@@ -447,6 +456,8 @@ function throwable(){
             }
 
         });
+        bool=true;
+    }
 };
 
     $.fn.throwable = function(options) {
@@ -454,12 +465,13 @@ function throwable(){
             var _this=this;
            console.log(options)
           if ($("body").data('throwable.instance') === undefined) {
-                        $("body").data('throwable.instance', new throwable());
-                        $("body").data('throwable.instance').init();
+                        $("body").data('throwable.instance', true);
+                        init();
                         console.log("instance");
                      }
-           var throwableInstance=$("body").data('throwable.instance');
-  
+                     
+           var throwableInstance= new throwable();
+           console.log(throwableInstance);
                  throwableInstance.setEnv(options);
                 return this.each(function(){
                     throwableInstance.initElem(this);
