@@ -94,7 +94,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     timeStep: 1 / 40,
                     hardMaterial: 1,
                     containment: "window",
-                    shape: "rectangle", // TODO : support circle
+                    shape: "box", // TODO : support circle
                     fixed: false,
                     drag: true
                 },
@@ -117,9 +117,11 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     });
                     $(element).on('mousedown', this.onElementMouseDown);
                     $(element).on('mouseup', this.onElementMouseUp);
-
-                    this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false, numInstance, Math.pow(2, 50) - 1));
-
+                    
+                    if (this.defaults.shape === "box")
+                        this.bodies.push(this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false, numInstance, Math.pow(2, 50) - 1));
+                    else
+                        this.bodies.push(this.createCircle(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), Math.max($elem.width() / 2, $elem.height() / 2), false, numInstance, Math.pow(2, 50) - 1));
                     // Clean position dependencies
                     while (element.offsetParent) {
                         element = element.offsetParent;
@@ -310,7 +312,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         boxSd.categoryBits = categoryBits;
                         boxSd.maskBits = maskBits;
                     }
-                    //console.log(categoryBits+"+"+maskBits+": "+boxSd.maskBits+"+"+boxSd.categoryBits);
+
                     if (!fixed)
                         boxSd.density = 1.0;
 
@@ -322,13 +324,18 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     boxBd.userData = {element: element};
 
                     return world.CreateBody(boxBd);
-                }, createCircle: function(world, x, y, radius, fixed, element) {
+                }, createCircle: function(world, x, y, radius, fixed,categoryBits, maskBits, element) {
 
                     if (typeof(fixed) === 'undefined')
                         fixed = true;
 
                     var boxSd = new b2CircleDef();
-
+                    
+                    if (categoryBits && maskBits) {
+                        boxSd.categoryBits = categoryBits;
+                        boxSd.maskBits = maskBits;
+                    }
+                    
                     if (!fixed)
                         boxSd.density = 1.0;
 
