@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>JQuery.throwable</title> 
+                <style>
+                    #billard{
+                        position:absolute;
+                        left:20%;
+                        top:10%;
+                      height:415px;
+                      width:800px;
+                      background-image: url("images/green.jpg");
+                      background-repeat:no-repeat;
+                    }
+                    #gotoGitHub{
+                      top:0px;
+                      right:0px;
+                      position:absolute;
+                      width:149px;
+                      height:149px;
+                      background-image: url("http://clojure-liberator.github.com/forkme_right_green_007200.png");
+                    }
+                    .balls1{
+                        width: 30px;
+                        height: 30px;
+                        background-image: url("images/balls/Billard-Ball-8-icon.png");
+                        border: 1px solid;
+                        border-radius: 40px;
+                    }
+                    .balls2{
+                        top: 400px;
+                        width: 30px;
+                        height: 30px;
+                        background-image: url("images/balls/Billard-Ball-1-icon.png");
+                        border: 1px solid;
+                        border-radius: 40px;
+                    }
+                </style>
+	</head>
+	<body>
+                     <a id="gotoGitHub" href="https://github.com/benahm/jquery.throwable"></a>
+                    <div id="billard">
+
+                    </div>
+                     <script src="javascripts/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
+                 <script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
+                    <script>                        /*$(document).ready(function () { 
+                     var j=0;
+                        while(j<150){
+                           var i=Math.floor((Math.random()*window.innerWidth-50)+50);
+                           $("#billard").append("<div class='balls1' style='position:absolute;left:" + i + "px'> </div>");
+                      j++;
+                        }
+                            $(".balls1").throwable({gravity:{x:0,y:0.1}});
+                        
+                          j=0;
+                        while(j<151){
+                           var i=Math.floor((Math.random()*window.innerWidth-50)+50);
+                           $("#billard").append("<div class='balls2' style='position:absolute;left:" + i + "px';> </div>");
+                             j++;
+                        }
+                        $(".balls2").throwable({gravity:{x:0,y:-0.1},shape:"circle"});
+                    });*/</script>
+
+	</body>
+</html>
