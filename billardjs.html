@@ -102,7 +102,10 @@
                     <script>                        $(document).ready(function () { 
                     
                      
-                            $(".ball").throwable({gravity:{x:0,y:0}});
+                            $(".ball").throwable({ gravity: { x: 0, y: 0 } });
+                            $(".ball").on("click", function () {
+                                $(".ball").throwable({impulse: {f:20,p:{x:1,y:1}}});
+                            });
                         
                     });</script>
 
