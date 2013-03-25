@@ -19,16 +19,18 @@ Create physical-like html object in your browser
 
 ## Options 
     * gravity: object {x:valueX,y:valueY} 
-    * containment: define the limits where the object can be dragged
+    * containment: define the limits where the object can be thrown 
                    default window 
                    you can specify custom containment by giving array [x1,y1,x2,y2]
     * shape: define the shape of the object by default "box" and you can specify "circle"
     * drag: boolean to specify if the object will be draggable or not, by default true
     * impulse: you can specify un impluse to apply on the object by giving an object 
-                   {f: define the energy of the impluse (number)
-                   p: define the direction on the impluse object like the gravity option
+                   {
+                   f: forceValue, // define the energy of the impluse (number)
+                   p: pointDirection //define the direction on the impluse object like the gravity option
+                   }
     
-## Events
+## Events & Callbacks
     * no events, Work in progress
 
 ## Requirements
