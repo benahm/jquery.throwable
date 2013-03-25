@@ -6,7 +6,9 @@
 		<title>JQuery.throwable</title> 
                 <style>
 					body{
-						background-image: url("images/textured_paper.png")
+						background-image: url("images/textured_paper.png");
+						width:100%;
+						overflow:hidden;
 					}
                     #demo h2{
                         position: absolute;
@@ -18,7 +20,7 @@
                     #slider{
                         position: absolute;
                         height: 400px;
-                        width: 2600px;
+                        width: 3900px;
                         left: 5%;
                         top:70px;
                         background-color:red;    
@@ -55,14 +57,30 @@
                         background-image: url("http://www.location-voiture-luxe.com/data/cover-categ/voitures-de-sport/voitures-de-sport.jpg");
                         background-size: 650px 400px;
                     }
+					#img5{
+                        position: absolute;
+                        left: 2600px;
+                        height: 400px;
+                        width: 650px;
+                        background-image: url("http://www.favorisxp.com/fond-ecran/voiture-cars-wallpapers/aston-martin-dbs-ultimate-fond-ecran-voiture.jpg");
+                        background-size: 650px 400px;
+                    }
+					#img6{
+                        position: absolute;
+                        left: 3250px;
+                        height: 400px;
+                        width: 650px;
+                        background-image: url("http://aigleange.a.i.pic.centerblog.net/o/f9fe704b.jpg");
+                        background-size: 650px 400px;
+                    }
                     #sideR{
                         position: absolute;
                         z-index: 1;
-                        left: 1000px;
+                        right:0px;
                         background-color: white;
                         top:0px;
-                        height: 700px;
-                        width: 600px;
+						bottom:0px;
+                        width: 350px;
                         border-left: 1px solid;
 						background-image: url("images/grey_wash_wall.png");
                     }
@@ -80,7 +98,7 @@
                         left: 0px;
                         background-color: white;
                         top:0px;
-                        height: 700px;
+						bottom:0px;
                         width: 350px;
                         border-right: 1px solid;
 						background-image: url("images/grey_wash_wall.png");
@@ -96,6 +114,8 @@
                         <div id="img2"  > </div>
                         <div id="img3"  > </div>
 						<div id="img4"   > </div>
+						<div id="img5"  > </div>
+						<div id="img6"  > </div>
                     </div>
                     <div id="sideR">
 						<a id="gotoGitHub" href="https://github.com/benahm/jquery.throwable"></a>
@@ -105,7 +125,7 @@
                  <script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
                     <script>$(document).ready(function () { 
                         
-                        $("#slider").throwable({containment:[-1610,70,2960,470]});
+                        $("#slider").throwable({containment:[-2910,70,4260,470]});
                         
                     });</script>
 
