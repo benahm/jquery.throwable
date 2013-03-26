@@ -21,6 +21,7 @@ Create physical-like html object in your browser
     * gravity: object {x:valueX,y:valueY} 
     * containment: define the limits where the object can be thrown 
                    default window 
+                   parent the object will be contain inside the parent
                    you can specify custom containment by giving array [x1,y1,x2,y2]
     * shape: define the shape of the object by default "box" and you can specify "circle"
     * drag: boolean to specify if the object will be draggable or not, by default true
