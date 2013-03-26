@@ -66,9 +66,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
     function inArrays(elem,array){
         var rt=-1;
-        console.log("inArrays")
-        console.log(elem)
-        console.log(array)
         for (var i=0;i<array.length;i++){
             rt=$.inArray(elem,array[i].elements);
             if(rt!==-1)
@@ -105,7 +102,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     infinitX: false,
                     gravity: {x: 0, y: 0},
                     timeStep: 1 / 40,
-                    hardMaterial: 1,
+                    bounce: 1, // value between 0 and 1
                     containment: "window",
                     shape: "box", 
                     impulse:null,
@@ -342,7 +339,10 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                     if (!fixed)
                         boxSd.density = 1.0;
-
+                    var bounce=this.defaults.bounce;
+                    if(bounce>0)
+                        boxSd.restitution=Math.min(1,bounce);
+                   
                     boxSd.extents.Set(width, height);
 
                     var boxBd = new b2BodyDef();
@@ -367,7 +367,11 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     
                     if (!fixed)
                         boxSd.density = 1.0;
-
+                    
+                    var bounce=this.defaults.bounce;
+                    if(bounce>0)
+                        boxSd.restitution=Math.min(1,bounce);
+                    
                     boxSd.radius = radius;
 
                     var boxBd = new b2BodyDef();
