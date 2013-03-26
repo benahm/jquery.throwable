@@ -141,11 +141,13 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         this.applyImpulse(body);
                     }
                     this.bodies.push(body);
+                    
                     // Clean position dependencies
-                    while (element.offsetParent) {
-                        element = element.offsetParent;
-                        element.style.position = 'static';
-                    }
+                    $("body").append($elem);
+                    $("body").css({
+                        "position":"static",
+                        "margin":0
+                    });
                     this.elements.push(elem);
 
                 },
@@ -167,8 +169,9 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         if (c !== "parent")
                             this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
                         else {
-                            var p = elem.parent();
-                            this.stage = {X: p.position().left, Y: p.position().top, Width: p.width(), Height: p.height()};
+                            var p = $(elem).parent();
+                            console.log(p.offset())
+                            this.stage = {X: p.offset().left, Y: p.offset().top, Width:p.offset().left+p.width(), Height:p.offset().top+ p.height()};
                             console.log(this.stage);
                         }
                     } else {
@@ -238,7 +241,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                 },
                 // init function
-
                 loop: function() {
                     this.applyGravity();
 
@@ -322,14 +324,14 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     }, 25);
 
                 },
-                //
+                // preventDefault
                 onElementMouseDown: function(event) {
                     event.preventDefault();
                 },
                 onElementMouseUp: function(event) {
                     event.preventDefault();
                 },
-                // .. BOX2D UTILS
+                // Make box
                 createBox: function(world, x, y, width, height, fixed, categoryBits, maskBits, element) {
 
                     if (typeof(fixed) === 'undefined')
@@ -352,7 +354,9 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     boxBd.userData = {element: element};
 
                     return world.CreateBody(boxBd);
-                }, createCircle: function(world, x, y, radius, fixed,categoryBits, maskBits, element) {
+                }, 
+                 // Make circle
+                 createCircle: function(world, x, y, radius, fixed,categoryBits, maskBits, element) {
 
                     if (typeof(fixed) === 'undefined')
                         fixed = true;
@@ -421,7 +425,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     var aabb = new b2AABB();
                     aabb.minVertex.Set(this.mouse.x + window.scrollX - 2, this.mouse.y + window.scrollY - 2);
                     aabb.maxVertex.Set(this.mouse.x + window.scrollX + 2, this.mouse.y + window.scrollY + 2);
-                    console.log(this.mouse)
+
                     // Query the world for overlapping shapes.
                     var k_maxCount = 10;
                     var shapes = [];
@@ -482,7 +486,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     return {X: x, Y: y, Width: width, Height: height};
                 },
                 getBrowserDimensions: function() {
-                    if (this.defaults.containment === "window" || this.defaults.containment === "parent" || this.defaults.fixed === true) {
+                    if (this.defaults.containment === "window" || this.defaults.containment === "parent" /*|| this.defaults.fixed === true*/) {
                         var changed = false;
                         if (this.stage.X !== window.scrollX) {
 
@@ -513,11 +517,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     } else
                     {
                         var c = this.defaults.containment;
-                        if (c !== "parent") {
                             this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
                             console.log(this.stage);
-                        }
-                        return false;
                     }
 
                 }
