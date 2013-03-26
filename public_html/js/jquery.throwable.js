@@ -107,7 +107,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     timeStep: 1 / 40,
                     hardMaterial: 1,
                     containment: "window",
-                    shape: "box", // TODO : support circle
+                    shape: "box", 
                     impulse:null,
                     fixed: false,
                     drag: true
@@ -144,7 +144,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     // Clean position dependencies
                     while (element.offsetParent) {
                         element = element.offsetParent;
-                        element.style.position = 'static';
+//                        element.style.position = 'static';
                     }
                     this.elements.push(elem);
 
@@ -193,6 +193,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                     });
                     $(document).on('mousemove', function(event) {
+
                         if (!_this.isRunning)
                             _this.run();
 
@@ -244,7 +245,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                     this.delta.X += (0 - this.delta.X) * .5;
                     this.delta.Y += (0 - this.delta.Y) * .5;
-
 
                     if (this.defaults.drag)
                         this.mouseDrag();
@@ -302,13 +302,14 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             obj.css("-ms-transform") ||
                             obj.css("-o-transform") ||
                             obj.css("transform");
+                    var angle;
                     if (matrix !== 'none') {
                         var values = matrix.split('(')[1].split(')')[0].split(',');
                         var a = values[0];
                         var b = values[1];
-                        var angle = Math.atan2(b, a);
+                        angle = Math.atan2(b, a);
                     } else {
-                        var angle = 0;
+                        angle = 0;
                     }
                     return angle;
                 },
@@ -420,7 +421,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     var aabb = new b2AABB();
                     aabb.minVertex.Set(this.mouse.x + window.scrollX - 2, this.mouse.y + window.scrollY - 2);
                     aabb.maxVertex.Set(this.mouse.x + window.scrollX + 2, this.mouse.y + window.scrollY + 2);
-
+                    console.log(this.mouse)
                     // Query the world for overlapping shapes.
                     var k_maxCount = 10;
                     var shapes = [];
