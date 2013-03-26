@@ -144,7 +144,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     // Clean position dependencies
                     while (element.offsetParent) {
                         element = element.offsetParent;
-//                        element.style.position = 'static';
+                        element.style.position = 'static';
                     }
                     this.elements.push(elem);
 
