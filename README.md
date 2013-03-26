@@ -1,4 +1,4 @@
-*JQuery.throwable*
+JQuery.throwable
 ================
 
 JQuery plugin to make html element throwable <br>
@@ -43,8 +43,10 @@ Create physical-like html object in your browser
 * An other demo [Slider demo](http://benahm.github.com/jquery.throwable/slider.html)<br>
 
 ## Credits
-* Mr. Doobs :: http://mrdoob.com/92/Google_Gravity
-* Alex Arnell's inheritance.js :: http://code.google.com/p/inheritance/
-* Box2Djs :: http://box2d-js.sourceforge.net/
+* Mr. Doobs : http://mrdoob.com/92/Google_Gravity
+* Alex Arnell's inheritance.js : http://code.google.com/p/inheritance/
+* Box2Djs : http://box2d-js.sourceforge.net/
+* JQuery-ui draggable : http://api.jqueryui.com/draggable/
 
+## More
 You can find the documentation about the plugin at [JQuery.throwable page](http://benahm.github.com/jquery.throwable/)
