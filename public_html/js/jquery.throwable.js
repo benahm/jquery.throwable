@@ -129,8 +129,12 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         "top": property.Y + 'px',
                         "width": property.Width + 'px'
                     });
-                    $(element).on('mousedown', this.onElementMouseDown);
-                    $(element).on('mouseup', this.onElementMouseUp);
+                    $(element).on('mousedown',function(){
+                        event.preventDefault();
+                    });
+                    $(element).on('mouseup', function(){
+                        event.preventDefault();
+                    });
                     
                     var body;
                     if (this.defaults.shape === "box")
@@ -323,13 +327,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                     }, 25);
 
-                },
-                // preventDefault
-                onElementMouseDown: function(event) {
-                    event.preventDefault();
-                },
-                onElementMouseUp: function(event) {
-                    event.preventDefault();
                 },
                 // Make box
                 createBox: function(world, x, y, width, height, fixed, categoryBits, maskBits, element) {
