@@ -129,10 +129,10 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         "top": property.Y + 'px',
                         "width": property.Width + 'px'
                     });
-                    $(element).on('mousedown',function(){
+                    $(element).on('mousedown',function(event){
                         event.preventDefault();
                     });
-                    $(element).on('mouseup', function(){
+                    $(element).on('mouseup', function(event){
                         event.preventDefault();
                     });
                     
