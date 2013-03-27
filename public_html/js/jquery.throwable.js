@@ -265,7 +265,9 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                         var body = this.bodies[i];
                         var element = this.elements[i];
-
+                        
+                        this.collisionDetection();
+                        
                         element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
                         element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
                         if (i === 1) {
@@ -280,6 +282,17 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         element.style.MozTransform = style;
                         element.style.OTransform = style;
                         element.style.msTransform = style;
+                    }
+                },
+                collisionDetection: function() {
+                    var contactList = world.m_contactList;
+                    if (contactList) {
+                        var shape1 = contactList.m_shape1,
+                                shape2 = contactList.m_shape2;
+                        var i1 = this.bodies.indexOf(shape1.m_body),
+                                i2 = this.bodies.indexOf(shape2.m_body);
+                        if (i1 >= 0 && i2 >= 0)
+                            $(document).trigger("collision", [this.elements[i1], this.elements[i2]]);
                     }
                 },
                 applyGravity: function() {
