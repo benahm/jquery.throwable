@@ -284,15 +284,28 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     }
                 },
                 collisionDetection: function() {
+                    var _this=this;
                     var contactList = world.m_contactList;
-                    if (contactList) {
+                    var noCollision=true;
+                       
+                    var collision=function(shape1,shape2){
+                         var i1 = _this.bodies.indexOf(shape1.m_body),
+                                i2 = _this.bodies.indexOf(shape2.m_body);
+                        if (i1 >= 0 && i2 >= 0){
+                            $(document).trigger("collision", [_this.elements[i1], _this.elements[i2]]);
+                            noCollision=false;
+                        }
+                    };
+                    // loop through all collisions
+                    while (contactList) {
                         var shape1 = contactList.m_shape1,
-                                shape2 = contactList.m_shape2;
-                        var i1 = this.bodies.indexOf(shape1.m_body),
-                                i2 = this.bodies.indexOf(shape2.m_body);
-                        if (i1 >= 0 && i2 >= 0)
-                            $(document).trigger("collision", [this.elements[i1], this.elements[i2]]);
-                    }
+                            shape2 = contactList.m_shape2;
+
+                        collision(shape1, shape2);
+                        contactList = contactList.m_next;
+                    } 
+                    
+                    if(noCollision)  $(document).trigger("nocollision");
                 },
                 applyGravity: function() {
                     var g = this.defaults.gravity;
