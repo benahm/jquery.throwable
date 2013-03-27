@@ -138,10 +138,14 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         body=this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false, numInstance, Math.pow(2, 50) - 1);
                     else
                         body=this.createCircle(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), Math.max($elem.width() / 2, $elem.height() / 2), false, numInstance, Math.pow(2, 50) - 1);
+                    
                     if(this.defaults.impulse){
                         this.applyImpulse(body);
                     }
-                    this.bodies.push(body);
+                    
+//                    console.log(body.m_angularDamping)
+//                    body.m_linearDamping=1
+//                    this.bodies.push(body);
                     
                     // Clean position dependencies
                     $("body").append($elem);
@@ -330,7 +334,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                     if (typeof(fixed) === 'undefined')
                         fixed = true;
-
+                    
                     var boxSd = new b2BoxDef();
                     if (categoryBits && maskBits) {
                         boxSd.categoryBits = categoryBits;
@@ -343,6 +347,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     if(bounce>0)
                         boxSd.restitution=Math.min(1,bounce);
                    
+                  
+                        
                     boxSd.extents.Set(width, height);
 
                     var boxBd = new b2BodyDef();
