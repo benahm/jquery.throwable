@@ -107,7 +107,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     shape: "box", 
                     impulse:null,
                     fixed: false,
-                    drag: true
+                    drag: true,
+                    damping:0
                 },
                 /**
                  * initElem initialize element
@@ -143,9 +144,12 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         this.applyImpulse(body);
                     }
                     
-//                    console.log(body.m_angularDamping)
-//                    body.m_linearDamping=1
-//                    this.bodies.push(body);
+                    // Apply damping
+                    if(this.defaults.damping>0){
+                        body.m_linearDamping=1000/(1000+this.defaults.damping);
+                        body.m_angularDamping=1000/(1000+this.defaults.damping);
+                    }
+                    this.bodies.push(body);
                     
                     // Clean position dependencies
                     $("body").append($elem);
