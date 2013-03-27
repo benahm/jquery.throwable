@@ -14,7 +14,9 @@ Create physical-like html object in your browser
                                 f:52,
                                 p:{x:1,y:1}
                             },
-                            shape:"circle"
+                            shape:"circle",
+                            bounce:0.5,
+                            damping:100
                         });
 
 ## Options 
@@ -30,6 +32,8 @@ Create physical-like html object in your browser
                    f: forceValue, // define the energy of the impluse (number)
                    p: pointDirection //define the direction on the impluse object like the gravity option
                    }
+    * bounce: define the bounce effect of the body (value between 0 and 1) default 0, no bounce
+    * damping: define the [damping](http://en.wikipedia.org/wiki/Damping) effect value from 0 to infini, default 0 
     
 ## Events & Callbacks
     * no events, Work in progress
