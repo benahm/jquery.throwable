@@ -51,8 +51,18 @@
                        /* $(".box2d").throwable({drag:true,
                             gravity:{x:0,y:0}
                         });*/
-                        $(".bo2d").throwable({drag:false,gravity:{x:0,y:1},containment:"parent"});
-                        $(".bo2d").on("mousedown",function(){
+                        $(".box2d").throwable({drag:true,gravity:{x:0,y:0},bounce:0,damping:0,containment:"parent"});
+                       $(document).on("collision",function(event,e1,e2){
+                            $(e1).css("background-color","black")
+                            console.log("collision")
+                       })
+                       
+                       $(document).on("nocollision",function (){
+                             $(".box2d").css("background-color","blue");
+       
+                             console.log("nocollision")
+                       })
+                        /* $(".bo2d").on("mousedown",function(){
                              $(".bo2d").throwable({
                             impulse:{
                                 f:252,
@@ -61,7 +71,7 @@
                         });
                             //$("body").append('<div class="bo2d" style="width: 75px;height: 40px;background-color: black; left: 150px;"> </div>')
                            // $(".bo2d").throwable({drag:true,gravity:{x:0,y:1}});
-                        })
+                        })*/
                     });</script>
 
 	</body>
