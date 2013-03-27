@@ -102,7 +102,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     infinitX: false,
                     gravity: {x: 0, y: 0},
                     timeStep: 1 / 40,
-                    bounce: 1, // value between 0 and 1
+                    bounce: 0, // value between 0 and 1
                     containment: "window",
                     shape: "box", 
                     impulse:null,
@@ -265,7 +265,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         var body = this.bodies[i];
                         var element = this.elements[i];
                         
-                        this.collisionDetection();
+                        //this.collisionDetection();
                         
                         element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
                         element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
