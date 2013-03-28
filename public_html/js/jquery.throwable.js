@@ -183,7 +183,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
                         else {
                             var p = $(elem).parent();
-                            if(p[0]!==document.body)
+                            if(!p.is("body"))
                                 this.stage = {X: p.offset().left, Y: p.offset().top, Width:p.offset().left+p.width(), Height:p.offset().top+ p.height()};
                         }
                     } else {
