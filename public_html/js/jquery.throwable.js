@@ -108,7 +108,9 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     impulse:null,
                     fixed: false,
                     drag: true,
-                    damping:0
+                    damping:0,
+                    collisionDetection:false,
+                    areaDetection:[]
                 },
                 /**
                  * initElem initialize element
@@ -149,6 +151,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         body.m_linearDamping=1000/(1000+this.defaults.damping);
                         body.m_angularDamping=1000/(1000+this.defaults.damping);
                     }
+                    body.m_userData=elem;
                     this.bodies.push(body);
                     
                     // Clean position dependencies
@@ -265,7 +268,10 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         var body = this.bodies[i];
                         var element = this.elements[i];
                         
-                        //this.collisionDetection();
+                        if(this.defaults.collisionDetection)
+                            this.collisionDetection();
+                        if(this.defaults.areaDetection.length>0)
+                            this.areaDetection();
                         
                         element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
                         element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
@@ -283,26 +289,51 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         element.style.msTransform = style;
                     }
                 },
+                areaDetection:function(){
+                     var aabb = new b2AABB();
+                    aabb.minVertex.Set(0, 0);
+                    aabb.maxVertex.Set(100, 100);
+
+                    // Query the world for overlapping shapes.
+                    var k_maxCount = 100;
+                    var shapes = [];
+                    var count = world.Query(aabb, shapes, k_maxCount);
+                    var elements = $.grep($.map(shapes,function(s){
+                             return  s.m_body.m_userData;
+                    }),function(b){
+                       return !$.isPlainObject(b);
+                    });
+                    if(elments.length>0){
+                       $(document).trigger("inarea",[elements]);
+                       console.log("trigged");
+                    }
+                      
+                    
+                },
                 collisionDetection: function() {
+                   
                     var _this=this;
                     var contactList = world.m_contactList;
                     var noCollision=true;
                        
                     var collision=function(shape1,shape2){
-                         var i1 = _this.bodies.indexOf(shape1.m_body),
-                                i2 = _this.bodies.indexOf(shape2.m_body);
-                        if (i1 >= 0 && i2 >= 0){
-                            $(document).trigger("collision", [_this.elements[i1], _this.elements[i2]]);
+                         var e1 = shape1.m_body.m_userData,
+                                e2 = shape2.m_body.m_userData;
+                        if (!$.isPlainObject(e1) && !$.isPlainObject(e2) ){
+                            $(document).trigger("collision", [e1, e2]);
                             noCollision=false;
                         }
                     };
+                    var limit=0;    
                     // loop through all collisions
-                    while (contactList) {
+                    while (contactList & limit<100) {
+                        console.log("next")
                         var shape1 = contactList.m_shape1,
                             shape2 = contactList.m_shape2;
 
                         collision(shape1, shape2);
                         contactList = contactList.m_next;
+                        limit++;
                     } 
                     
                     if(noCollision)  $(document).trigger("nocollision");
