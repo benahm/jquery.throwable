@@ -306,8 +306,14 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         }), function(b) {
                             return !$.isPlainObject(b);
                         });
-                        if (elements.length > 0 && $(elements).not(_this.elementsInArea[0]).length!==0) {
-                            $(document).trigger("inarea", [elements]);
+                        var inArea=$(elements).not(_this.elementsInArea[0]);
+                        if (inArea.length !== 0) {
+                            $(document).trigger("inarea", [inArea]);
+                        }else{
+                            var outArea=$(_this.elementsInArea[0]).not(elements);
+                            if (outArea.length !== 0) {
+                                $(document).trigger("outarea", [outArea]);
+                            }
                         }
                          _this.elementsInArea[i]=elements;
                     };  
@@ -333,8 +339,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     };
                     var limit=0;    
                     // loop through all collisions
-                    while (contactList & limit<100) {
-                        console.log("next")
+                    while (contactList && limit<100) {
                         var shape1 = contactList.m_shape1,
                             shape2 = contactList.m_shape2;
 
