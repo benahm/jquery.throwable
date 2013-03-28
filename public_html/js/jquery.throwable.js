@@ -290,6 +290,13 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         element.style.msTransform = style;
                     }
                 },
+                sync:function(){
+//                   console.log($(this.elements).attr("id"));
+//                  this.elements=$.grep(this.elements,function(el){
+//                       var $el=$(el);
+//                       return $("#"+$el.attr("id")).length>0;
+//                   });
+                },
                 areaDetection:function(){
                     var _this=this;
                     var detectArea = function(i,c,elementsInArea) {
