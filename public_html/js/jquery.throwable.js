@@ -92,6 +92,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
         this.mouseJoint;
 
+        this.elementsInArea=[];
         this.elements = [];
         this.bodies = [];
         this.properties = [];
@@ -290,25 +291,31 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     }
                 },
                 areaDetection:function(){
-                     var aabb = new b2AABB();
-                    aabb.minVertex.Set(0, 0);
-                    aabb.maxVertex.Set(100, 100);
+                    var _this=this;
+                    var detectArea = function(i,c,elementsInArea) {
+                        var aabb = new b2AABB();
+                        aabb.minVertex.Set(c[0], c[1]);
+                        aabb.maxVertex.Set(c[2], c[3]);
 
-                    // Query the world for overlapping shapes.
-                    var k_maxCount = 100;
-                    var shapes = [];
-                    var count = world.Query(aabb, shapes, k_maxCount);
-                    var elements = $.grep($.map(shapes,function(s){
-                             return  s.m_body.m_userData;
-                    }),function(b){
-                       return !$.isPlainObject(b);
-                    });
-                    if(elments.length>0){
-                       $(document).trigger("inarea",[elements]);
-                       console.log("trigged");
+                        // Query the world for overlapping shapes.
+                        var k_maxCount = 100;
+                        var shapes = [];
+                        var count = world.Query(aabb, shapes, k_maxCount);
+                        var elements = $.grep($.map(shapes, function(s) {
+                            return  s.m_body.m_userData;
+                        }), function(b) {
+                            return !$.isPlainObject(b);
+                        });
+                        if (elements.length > 0 && $(elements).not(_this.elementsInArea[0]).length!==0) {
+                            $(document).trigger("inarea", [elements]);
+                        }
+                         _this.elementsInArea[i]=elements;
+                    };  
+                   
+                    var areas=this.defaults.areaDetection;
+                    for(var i=0; i<areas.length;i++){
+                        detectArea(i,areas[i],this.elementsInArea[i]);
                     }
-                      
-                    
                 },
                 collisionDetection: function() {
                    
@@ -386,7 +393,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     setInterval(function() {
                         _this.loop();
 
-                    }, 25);
+                    },25);
 
                 },
                 // Make box
