@@ -50,7 +50,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
     
     var worldAABB;
     var world;
-    var $elements;
 
     function init() {
 
@@ -161,8 +160,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         "position":"static",
                         "margin":0
                     });
-                    this.elements.push(elem);
-
                 },
                 applyOptions:function(o,i){
                         this.defaults = $.extend({}, this.defaults, o);
@@ -171,7 +168,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         var ant_gravity = new b2Vec2(f * p.x * body.GetMass(), f * p.y * body.GetMass());
                         body.ApplyImpulse(ant_gravity,body.GetCenterPosition());
                 },
-                setEnv: function(elem, o) {
+                setEnv: function(elements, o) {
                     var _this = this;
                     numInstance *= 2;
                     this.numInstance = numInstance;
@@ -182,7 +179,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         if (c !== "parent")
                             this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
                         else {
-                            var p = $(elem).parent();
+                            var p = $(elements).parent();
                             if(!p.is("body"))
                                 this.stage = {X: p.offset().left, Y: p.offset().top, Width:p.offset().left+p.width(), Height:p.offset().top+ p.height()};
                         }
@@ -194,6 +191,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             _this.handleScrollOrResize();
                         });
                     }
+                    
+                    this.elements=elements;
                     
                     this.addEventRemoveElement();
                     // setwalls
@@ -307,8 +306,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     });
                 },
                 sync: function() {
-                    this.elements = $($elements.selector);
-                    ;
+                    this.elements = $(this.elements.selector);
                     var _this = this;
                     var i = 0;
                     this.bodies = $.grep(this.bodies, function(el) {
@@ -642,8 +640,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
-            $elements = this;
-            console.log($elements);
+            var _this = this;
             if ($("body").data('throwable.instance') === undefined) {
                 $("body").data('throwable.instance', true);
                 init();
@@ -657,7 +654,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                 var i=inArrays(this, $.throwables);
                 if ( i=== -1){
                     if(!isEnvSet){
-                         throwableInstance.setEnv(this, options);
+                         throwableInstance.setEnv(_this, options);
                          isEnvSet=true;
                     }
                     throwableInstance.initElem(this);
