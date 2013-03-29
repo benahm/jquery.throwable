@@ -269,6 +269,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                         var body = this.bodies[i];
                         var element = this.elements[i];
+                        var property=this.properties[i];
+                        if(!body || !element || !property) break;
                         
                         if(this.defaults.collisionDetection)
                             this.collisionDetection();
@@ -276,8 +278,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             this.areaDetection();
                         
                         
-                        element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
-                        element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
+                        element.style.left = (body.m_position0.x - (property.Width >> 1)) + 'px';
+                        element.style.top = (body.m_position0.y - (property.Height >> 1)) + 'px';
                         if (i === 1) {
                             //console.log($(element).position().left -(stage.Width - properties[i].Width ))
                             //console.log(this.getProjectedHeight($(element)));
@@ -315,6 +317,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             return true;
                         }
                         else {
+                            _this.properties.splice(i,1);
                             el.Freeze();
                             return false;
                         }
