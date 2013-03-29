@@ -50,7 +50,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
     
     var worldAABB;
     var world;
-
+    var $elements;
 
     function init() {
 
@@ -194,6 +194,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             _this.handleScrollOrResize();
                         });
                     }
+                    
+                    this.addEventRemoveElement();
                     // setwalls
                     this.setWalls(numInstance);
 
@@ -274,6 +276,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         if(this.defaults.areaDetection.length>0)
                             this.areaDetection();
                         
+                        
                         element.style.left = (body.m_position0.x - (this.properties[i].Width >> 1)) + 'px';
                         element.style.top = (body.m_position0.y - (this.properties[i].Height >> 1)) + 'px';
                         if (i === 1) {
@@ -290,12 +293,34 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         element.style.msTransform = style;
                     }
                 },
-                sync:function(){
-//                   console.log($(this.elements).attr("id"));
-//                  this.elements=$.grep(this.elements,function(el){
-//                       var $el=$(el);
-//                       return $("#"+$el.attr("id")).length>0;
-//                   });
+                addEventRemoveElement:function(){
+                    var event= new $.Event("removeElement");
+                    var initialremove=$.fn.remove;
+                    $.fn.remove=function (){
+                         var rt=initialremove.apply(this,arguments);
+                         $(document).trigger(event);
+                         return rt;
+                    };
+                    var _this=this;
+                    $(document).bind("removeElement",function (){
+                        _this.sync();
+                    });
+                },
+                sync: function() {
+                    this.elements = $($elements.selector);
+                    ;
+                    var _this = this;
+                    var i = 0;
+                    this.bodies = $.grep(this.bodies, function(el) {
+                        if (el.m_userData === _this.elements[i]) {
+                            i++;
+                            return true;
+                        }
+                        else {
+                            el.Freeze();
+                            return false;
+                        }
+                    });
                 },
                 areaDetection:function(){
                     var _this=this;
@@ -617,8 +642,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
-            var _this = this;
-            console.log(options);
+            $elements = this;
+            console.log($elements);
             if ($("body").data('throwable.instance') === undefined) {
                 $("body").data('throwable.instance', true);
                 init();
