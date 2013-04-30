@@ -334,11 +334,13 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         var k_maxCount = 100;
                         var shapes = [];
                         var count = world.Query(aabb, shapes, k_maxCount);
-                        var elements = $.grep($.map(shapes, function(s) {
-                            return  s.m_body.m_userData;
-                        }), function(b) {
-                            return !$.isPlainObject(b);
-                        });
+                        var elements=[];
+                        for(var i;i++;i<shapes.length){
+                            var elem=shapes[i];
+                            if($.inArray(elem,_this.bodies)!==-1 && elem.m_body.m_userData){
+                               elements.push(elem.m_body.m_userData);
+                            }
+                        }
                         var inArea=$(elements).not(_this.elementsInArea[0]);
                         if (inArea.length !== 0) {
                             $(document).trigger("inarea", [inArea]);
@@ -640,7 +642,9 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
         }
     }
     ;
-
+    
+    // JQuery.fn.throwable
+    
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
             var _this = this;
@@ -655,6 +659,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
             var isEnvSet=false;
             var rt = this.each(function() {
                 var i=inArrays(this, $.throwables);
+                //console.log(i,$.throwables);
                 if ( i=== -1){
                     if(!isEnvSet){
                          throwableInstance.setEnv(_this, options);
@@ -672,6 +677,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
             return rt;
         }
     };
+    
+    // array that will contient arrays
     $.throwables = [];
 
 })(jQuery, window, document);
