@@ -5,20 +5,20 @@ JQuery plugin to make html element throwable <br>
 
 Create physical-like html object in your browser
 ## Code exemple
-
-    $(".box2d").throwable({
-                            containment:[0,0,500,500],
-                            drag:true,
-                            gravity:{x:0,y:0},
-                            impulse:{
-                                f:52,
-                                p:{x:1,y:1}
-                            },
-                            shape:"circle",
-                            bounce:0.5,
-                            damping:100
-                        });
-
+```javascript
+$(".box2d").throwable({
+                        containment:[0,0,500,500],
+                        drag:true,
+                        gravity:{x:0,y:0},
+                        impulse:{
+                            f:52,
+                            p:{x:1,y:1}
+                        },
+                        shape:"circle",
+                        bounce:0.5,
+                        damping:100
+                    });
+```
 ## Options 
     * gravity: object {x:valueX,y:valueY} 
     * containment: define the limits where the object can be thrown 
