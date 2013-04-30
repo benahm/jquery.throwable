@@ -335,10 +335,10 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         var shapes = [];
                         var count = world.Query(aabb, shapes, k_maxCount);
                         var elements=[];
-                        for(var i;i++;i<shapes.length){
-                            var elem=shapes[i];
-                            if($.inArray(elem,_this.bodies)!==-1 && elem.m_body.m_userData){
-                               elements.push(elem.m_body.m_userData);
+                        for(var i=0;i<shapes.length;i++){
+                            var elem=shapes[i].m_body.m_userData;
+                            if(!$.isPlainObject(elem)&&$.inArray(elem,_this.elements)!==-1){
+                                elements.push(elem);
                             }
                         }
                         var inArea=$(elements).not(_this.elementsInArea[0]);
