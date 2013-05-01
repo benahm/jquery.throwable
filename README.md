@@ -46,7 +46,8 @@ $(".box2d").throwable({
 * Check out this simple demo here [Octocats Demo](http://benahm.github.com/jquery.throwable/octocats.html)<br>
 * Applying gravity per selection of elements [Gravity per element](http://benahm.github.com/jquery.throwable/gravityperelement.html)
 * An other demo [Slider demo](http://benahm.github.com/jquery.throwable/slider.html)<br>
-* Dem of collision detection and area detection [here](http://benahm.github.com/jquery.throwable/demoevents.html)
+* Demo of collision detection and area detection [here](http://benahm.github.com/jquery.throwable/demoevents.html)
+* Billard js [Play Billard](http://benahm.github.io/jquery.throwable/billardjs.html)
 
 ## Credits
 * Mr. Doobs : http://mrdoob.com/92/Google_Gravity
