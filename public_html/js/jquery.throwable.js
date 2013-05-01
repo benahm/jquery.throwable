@@ -73,6 +73,16 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
         return rt;
     }
     
+    function arrayIntersect(a, b)
+    {   var rt=a,i=0;
+        while(i<rt.length){
+            if($.inArray(rt[i],b)===-1)
+                rt.splice(i,1);
+            else
+                 i++;
+        };
+        return rt;
+    };
     
     var bool = false;
     var wall_thickness = 100;
@@ -319,7 +329,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     });
                 },
                 sync: function() {
-                    this.elements = $(this.elements.selector);
+
+                    this.elements =arrayIntersect($(this.elements.selector),this.elements);
                     var _this = this;
                     var i = 0;
                     this.bodies = $.grep(this.bodies, function(el) {
@@ -668,28 +679,29 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
             
             var isEnvSet=false;
             var rt = this.each(function() {
-                var i=inArrays(this, $.throwables);
-                if ( i=== -1 || $.throwables[i.index].elements.selector !==_this.selector){  
+                var i=inArrays(this, $.throwables),
+                     exist=(i!==-1);
+                if ( !exist || $.throwables[i.index].elements.selector !==_this.selector){  
                        
-                    if(i!==-1){
+                    if(exist){
                         $.throwables[i.index].removeElement(i.index);
                         throwableInstance.defaults = $.extend({}, throwableInstance.defaults, $.throwables[i.index].defaults);
                     }
                     
-                    if(!isEnvSet){
-                         throwableInstance.setEnv(_this, options);
-                         isEnvSet=true;
-                    }
+                        if(!isEnvSet){
+                   
+                             throwableInstance.setEnv(_this, options);
+                             isEnvSet=true;
+                        }
                 
                     throwableInstance.initElem(this);
                 }
                 else{ 
-                    
                     throwableInstance=$.throwables[i.index];
                     throwableInstance.applyOptions(options,i.value);
                 }
             });
-            
+          
             if($.inArray(throwableInstance,$.throwables)===-1)
                 $.throwables.push(throwableInstance);
             return rt;
