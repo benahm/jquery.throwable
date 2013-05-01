@@ -68,10 +68,11 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
         for (var i=0;i<array.length;i++){
             rt=$.inArray(elem,array[i].elements);
             if(rt!==-1)
-                return {i1:i,i2:rt};
+                return {index:i,value:rt};
         }
         return rt;
     }
+    
     
     var bool = false;
     var wall_thickness = 100;
@@ -164,9 +165,11 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                 applyOptions:function(o,i){
                         this.defaults = $.extend({}, this.defaults, o);
                         var body=this.bodies[i];
-                        var f=this.defaults.impulse.f,p=this.defaults.impulse.p;
-                        var ant_gravity = new b2Vec2(f * p.x * body.GetMass(), f * p.y * body.GetMass());
-                        body.ApplyImpulse(ant_gravity,body.GetCenterPosition());
+                        if(this.defaults.impulse){
+                            var f=this.defaults.impulse.f,p=this.defaults.impulse.p;
+                            var ant_gravity = new b2Vec2(f * p.x * body.GetMass(), f * p.y * body.GetMass());
+                            body.ApplyImpulse(ant_gravity,body.GetCenterPosition());
+                        }
                 },
                 setEnv: function(elements, o) {
                     var _this = this;
@@ -180,9 +183,12 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
                         else {
                             var p = $(elements).parent();
-                            if(!p.is("body"))
+                            if(!p.is("body")){
                                 this.stage = {X: p.offset().left, Y: p.offset().top, Width:p.offset().left+p.width(), Height:p.offset().top+ p.height()};
+                                this.defaults.containment=[p.offset().left, p.offset().top,p.offset().left+p.width(),p.offset().top+ p.height()];
+                            }
                         }
+                        
                     } else {
                         $(window).scroll(function() {
                             _this.handleScrollOrResize();
@@ -293,6 +299,11 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         element.style.OTransform = style;
                         element.style.msTransform = style;
                     }
+                },
+                removeElement:function(index){
+                    this.elements.splice(index, 1);
+                    this.bodies.splice(index, 1);
+                    this.properties.splice(index, 1);
                 },
                 addEventRemoveElement:function(){
                     var event= new $.Event("removeElement");
@@ -632,7 +643,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     {
                         var c = this.defaults.containment;
                             this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
-                            console.log(this.stage);
                     }
 
                 }
@@ -659,19 +669,27 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
             var isEnvSet=false;
             var rt = this.each(function() {
                 var i=inArrays(this, $.throwables);
-                //console.log(i,$.throwables);
-                if ( i=== -1){
+                if ( i=== -1 || $.throwables[i.index].elements.selector !==_this.selector){  
+                       
+                    if(i!==-1){
+                        $.throwables[i.index].removeElement(i.index);
+                        throwableInstance.defaults = $.extend({}, throwableInstance.defaults, $.throwables[i.index].defaults);
+                    }
+                    
                     if(!isEnvSet){
                          throwableInstance.setEnv(_this, options);
                          isEnvSet=true;
                     }
+                
                     throwableInstance.initElem(this);
                 }
                 else{ 
-                    throwableInstance=$.throwables[i.i1];
-                    throwableInstance.applyOptions(options,i.i2);
+                    
+                    throwableInstance=$.throwables[i.index];
+                    throwableInstance.applyOptions(options,i.value);
                 }
             });
+            
             if($.inArray(throwableInstance,$.throwables)===-1)
                 $.throwables.push(throwableInstance);
             return rt;
