@@ -357,17 +357,18 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         var shapes = [];
                         var count = world.Query(aabb, shapes, k_maxCount);
                         var elements=[];
-                        for(var i=0;i<shapes.length;i++){
-                            var elem=shapes[i].m_body.m_userData;
+                        for(var j=0;j<shapes.length;j++){
+                            var elem=shapes[j].m_body.m_userData;
                             if(!$.isPlainObject(elem)&&$.inArray(elem,_this.elements)!==-1){
                                 elements.push(elem);
                             }
                         }
-                        var inArea=$(elements).not(_this.elementsInArea[0]);
+                     
+                        var inArea=$(elements).not(_this.elementsInArea[i]);
                         if (inArea.length !== 0) {
                             $(document).trigger("inarea", [inArea]);
                         }else{
-                            var outArea=$(_this.elementsInArea[0]).not(elements);
+                            var outArea=$(_this.elementsInArea[i]).not(elements);
                             if (outArea.length !== 0) {
                                 $(document).trigger("outarea", [outArea]);
                             }
@@ -676,7 +677,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
             var throwableInstance = new throwable();
 
-            
             var isEnvSet=false;
             var rt = this.each(function() {
                 var i=inArrays(this, $.throwables),
