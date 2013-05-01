@@ -281,7 +281,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         this.mouseDrag();
                     world.Step(this.defaults.timeStep, this.iterations);
 
-                    for (i = 0; i < this.elements.length; i++) {
+                    for (var i = 0; i < this.elements.length; i++) {
 
                         var body = this.bodies[i];
                         var element = this.elements[i];
@@ -389,7 +389,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                        
                     var collision=function(shape1,shape2){
                          var e1 = shape1.m_body.m_userData,
-                                e2 = shape2.m_body.m_userData;
+                             e2 = shape2.m_body.m_userData;
                         if (!$.isPlainObject(e1) && !$.isPlainObject(e2) ){
                             $(document).trigger("collision", [e1, e2]);
                             noCollision=false;
@@ -410,7 +410,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                 },
                 applyGravity: function() {
                     var g = this.defaults.gravity;
-                    for (i = 0; i < this.bodies.length; i++) {
+                    for (var i = 0; i < this.bodies.length; i++) {
                         var ant_gravity = new b2Vec2(350.0 * g.x * this.bodies[i].GetMass(), 350.0 * g.y * this.bodies[i].GetMass());
                         this.bodies[i].ApplyForce(ant_gravity, this.bodies[i].GetCenterPosition());
                     }
