@@ -5,10 +5,16 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<title>JQuery.throwable</title> 
                 <style>
+                    body{
+                        top:0;
+                        left:0;
+                        right:0;
+                        bottom:0;
+                    }
                     #billard{
-                        position:absolute;
-                        left:20%;
-                        top:10%;
+                      position:absolute;
+                      left:250px;
+                      top:70px;
                       height:415px;
                       width:800px;
                       background-image: url("images/green.jpg");
@@ -24,7 +30,6 @@
                     }
                     .ball{
                         position: absolute;
-                        top:70px;
                         width: 29px;
                         height: 29px;
                         background-position: -1px -1px;
@@ -33,7 +38,7 @@
                     #b0{
                         left: 50px;
                         position: absolute;
-                        top:70px;
+                        top:200px;
                         width: 29px;
                         height: 29px;
                         background-position: -1px -1px;
@@ -41,50 +46,80 @@
                         background-color: white
                     }
                     #b1{
+                         left: 550px;
+                         top: 200px;
                          background-image: url("images/balls/Billard-Ball-1-icon.png");
                     }
                     #b2{
+                         left: 600px;
+                         top: 170px;
                          background-image: url("images/balls/Billard-Ball-2-icon.png");
                     }
                     #b3{
+                         left: 650px;
+                         top: 140px;
                          background-image: url("images/balls/Billard-Ball-3-icon.png");
                     }
                     #b4{
+                         left: 650px;
+                         top: 200px;
                          background-image: url("images/balls/Billard-Ball-4-icon.png");
                     }
                     #b5{
+                         left: 650px;
+                         top: 260px;
                          background-image: url("images/balls/Billard-Ball-5-icon.png");
                     }
                     #b6{
+                         left: 625px;
+                         top: 185px;
                          background-image: url("images/balls/Billard-Ball-6-icon.png");
                     }
                     #b7{
+                         left: 600px;
+                         top: 230px;
                          background-image: url("images/balls/Billard-Ball-7-icon.png");
                     }
 
                     #b8{
+                         left: 600px;
+                         top: 200px;
                          background-image: url("images/balls/Billard-Ball-8-icon.png");
                     }
                     
                     #b9{
+                         left: 625px;
+                         top: 245px;
                          background-image: url("images/balls/Billard-Ball-9-icon.png");
                     }
                     #b10{
+                         left: 625px;
+                         top: 215px;
                          background-image: url("images/balls/Billard-Ball-10-icon.png");
                     }
                     #b11{
+                         left: 650px;
+                         top: 230px;
                          background-image: url("images/balls/Billard-Ball-11-icon.png");
                     }
                     #b12{
+                         left: 650px;
+                         top: 170px;
                          background-image: url("images/balls/Billard-Ball-12-icon.png");
                     }
                     #b13{
+                         left: 575px;
+                         top: 215px;
                          background-image: url("images/balls/Billard-Ball-13-icon.png");
                     }
                     #b14{
+                         left: 575px;
+                         top: 185px;
                          background-image: url("images/balls/Billard-Ball-14-icon.png");
                     }
                     #b15{
+                         left: 625px;
+                         top: 155px;
                          background-image: url("images/balls/Billard-Ball-15-icon.png");
                       }
 
@@ -126,7 +161,7 @@
 	<body>
                      <a id="gotoGitHub" href="https://github.com/benahm/jquery.throwable"></a>
                     <div id="billard">
-                      <div id="b0" ></div>
+                      <div id="b0" class="ball"></div>
                       <div id="b1" class="ball"></div>
                       <div id="b2" class="ball"></div>
                       <div id="b3" class="ball"></div>
@@ -150,32 +185,107 @@
                       <div id="h6" class="hole"></div>
                     </div>
         
-                     <script src="javascripts/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
-                 <script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
-                    <script>                        $(document).ready(function () { 
-                    
-                            $("#b0").throwable({drag:false,gravity: { x: 0, y: 0 },
-                              containment:"parent"
-                          });
-                            $(".ball").throwable({ gravity: { x: 0, y: 0 },containment:"parent",drag:false });
-                         $("#b0").throwable({impulse:{f:1,p:{x:1,y:1}}});
-      
-                            $("#b0").on("mousedown",function(){
-                              var _this=$(this);
-                                var x=_this.offset().left+_this.width()/2,
-                                    y=_this.offset().top+_this.height()/2
+                    <script src="javascripts/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
+                    <script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
+                    <script>  $(document).ready(function () { 
+                        
+                          //*****************************
+                          // declare variables 
+                          //*****************************
+                          var $b0=$("#b0"),
+                              $ball=$(".ball"),
+                              $billard=$("#billard"),
+                              left=$billard.position().left,
+                              top=$billard.position().top; ;
+                      
+                         //*****************************
+                         // utils Object
+                         //*****************************
+                          var utils=new function(){
+                              var forceBetween=function(x,val){
+                                  var valAbs=Math.abs(val);
+                                  if(x>valAbs) return valAbs;
+                                  if(x<-valAbs) return -valAbs;
+                                  else return x;
+                              };
+                              var maxi=function(x,y){
+                                  return Math.max(Math.abs(x),Math.abs(y));
+                              };
+                              var mini=function(x,y){
+                                  return Math.min(Math.abs(x),Math.abs(y));
+                              };
+                              return {
+                                normalize:function(x,y,val){
+                                    var xs=forceBetween(x,val),
+                                        ys=forceBetween(y,val),
+                                        max=maxi(x,y),
+                                        min=mini(x,y),
+                                        valabs=Math.abs(val);
+                                    if(max >= valabs)
+                                        return {x:valabs===Math.abs(xs)?xs:(ys*min/max),y:valabs===Math.abs(ys)?ys:(xs*min/max)};
+                                    else return {x:xs,y:ys};
+                                },
+                                arrayHolesPosition:function(x,y,width,height){
+                                    var holesArray=[];
+                                    var r=3;
+                                    //up left
+                                    holesArray.push([left,top,left+r,top+r]);
+                                    //down left
+                                    holesArray.push([left,top+height,left+r,top+height-r]);
+                                    //up center
+                                    holesArray.push([left+width/2-r/2,top,left+width/2+r/2,top+r]);
+                                    //up right
+                                    holesArray.push([left+width-r,top,left+width,top+r]);
+                                    //down center
+                                    holesArray.push([left+width/2-r/2,top+height,left+width/2+r/2,top+height-r]);
+                                    //down right
+                                    holesArray.push([left+width,top+height,left+width-r,top+height-r]);
+                                    return holesArray;
+                                }
+                              };
+                          };
+                          
+                          
+
+                        $ball.throwable({ gravity: { x: 0, y: 0 },containment:"parent",drag:false,areaDetection:utils.arrayHolesPosition(left,top,$billard.width(),$billard.height()) });
+                        
+                         function B0(){
+                             var _this=this;
+                             this.recreateB0=function(){
+                                 $billard.append('<div id="b0" class="ball"></div>');
+                                 $b0=$("#b0");
+                                 $b0.throwable({ gravity: { x: 0, y: 0 },containment:"parent",drag:false,areaDetection:utils.arrayHolesPosition(left,top,$billard.width(),$billard.height())});
+                                 $b0.on("mousedown",function(){
+                                     _this.mousedown.apply(this);
+                                 });
+
+                             };
+                             this.mousedown=function(){
+                              var $this=$(this);
+                                var x=$this.offset().left+$this.width()/2,
+                                    y=$this.offset().top+$this.height()/2
                               $("body").on("mousemove",function(e){
-                               
-                                  console.log((e.pageX-x)+"++"+(e.pageY-y))
                               });
+                              $(document).off("inarea");
+                              $(document).on("inarea",function (event,data){
+                                  if($(data)[0]===$b0[0]) setTimeout(function(){_this.recreateB0();},500);
+                                   $(data).remove();
+                              });
+                              
+                              
+                              
                               $("body").on("mouseup",function(e){
-                                console.log((e.pageX-x)+"++"+(e.pageY-y))
-                                   $("#b0").throwable({impulse:{f:20,p:{x:-(e.pageX-x),y:-(e.pageY-y)}}});
+                                  var vec2=utils.normalize(x-e.pageX,y-e.pageY,60);
+                                   $b0.throwable({impulse:{f:20,p:vec2}});
                                   $("body").off("mousemove");
                                   $("body").off("mouseup");
+                                  
                               });
-                                //$(".ball").throwable({impulse: {f:20,p:{x:1,y:1}}});
-                            });
+                            };
+                         }
+                         
+                         var b0=new B0();
+                         $b0.on("mousedown",b0.mousedown);
                         
                     });</script>
 
