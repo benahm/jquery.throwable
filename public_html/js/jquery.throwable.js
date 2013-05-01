@@ -173,9 +173,11 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     });
                 },
                 applyOptions:function(o,i){
+                        
                         this.defaults = $.extend({}, this.defaults, o);
                         var body=this.bodies[i];
                         if(this.defaults.impulse){
+                            body.WakeUp();
                             var f=this.defaults.impulse.f,p=this.defaults.impulse.p;
                             var ant_gravity = new b2Vec2(f * p.x * body.GetMass(), f * p.y * body.GetMass());
                             body.ApplyImpulse(ant_gravity,body.GetCenterPosition());
