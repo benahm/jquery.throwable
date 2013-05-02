@@ -16,10 +16,13 @@ $(".box2d").throwable({
                         },
                         shape:"circle",
                         bounce:0.5,
-                        damping:100
+                        damping:100,
+                        areaDetection:[[0,0,300,300]],
+                        collisionDetection: true
                     });
 ```
 ## Options 
+```javascript
     * gravity: object {x:valueX,y:valueY} 
     * containment: define the limits where the object can be thrown 
                    default window 
@@ -29,15 +32,22 @@ $(".box2d").throwable({
     * drag: boolean to specify if the object will be draggable or not, by default true
     * impulse: you can specify un impluse to apply on the object by giving an object 
                    {
-                   f: forceValue, // define the energy of the impluse (number)
-                   p: pointDirection //define the direction on the impluse object like the gravity option
+                        f: forceValue, // define the energy of the impluse (number)
+                        p: pointDirection //define the direction on the impluse object like the gravity option
                    }
     * bounce: define the bounce effect of the body (value between 0 and 1) default 0, no bounce
     * damping: define the [damping](http://en.wikipedia.org/wiki/Damping) effect value from 0 to infini, default 0 
-    
+    * areaDetection: specify an array of areas, that when an objet enter those areas the event inarea is fired 
+                   and outara event fired when exiting
+    * collisionDectection : bool to activate or desactivate the collision detection 
+```
 ## Events & Callbacks
-    * no events, Work in progress
-
+```javascript
+    * inarea : fired when an object enter and area specified in the option areaDetection
+    * outarea : fired when an object exit and area specified in the option areaDetection
+    * collision : fired when a collision happened between two objects 
+    * nocollision : fired when there is no collision 
+```
 ## Requirements
     * JQuery (of course it's a jquery plugin)
 
