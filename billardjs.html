@@ -1,343 +1,433 @@
 <!doctype html>
 <html>
-<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<title>JQuery.throwable</title> 
-                <style>
-                    #game{
-                        background-color: wheat;
-                        position: absolute;
-                        top:0;
-                        left:0;
-                        right:0;
-                        bottom:0;
-                    }
-                    #billard{
-                      position:absolute;
-                      left:250px;
-                      top:70px;
-                      height:415px;
-                      width:800px;
-                      background-image: url("images/green.jpg");
-                      background-repeat:no-repeat;
-                    }
-                    #gotoGitHub{
-                      top:0px;
-                      right:0px;
-                      position:absolute;
-                      width:149px;
-                      height:149px;
-                      background-image: url("http://clojure-liberator.github.com/forkme_right_green_007200.png");
-                    }
-                    .ball{
-                        position: absolute;
-                        width: 29px;
-                        height: 29px;
-                        background-position: -1px -1px;
-                        border-radius: 50%;
-                    }
-                    #b0{
-                        left: 50px;
-                        position: absolute;
-                        top:200px;
-                        width: 29px;
-                        height: 29px;
-                        background-position: -1px -1px;
-                        border-radius: 50%;
-                        background-color: white
-                    }
-                    #b1{
-                         left: 550px;
-                         top: 200px;
-                         background-image: url("images/balls/Billard-Ball-1-icon.png");
-                    }
-                    #b2{
-                         left: 600px;
-                         top: 170px;
-                         background-image: url("images/balls/Billard-Ball-2-icon.png");
-                    }
-                    #b3{
-                         left: 650px;
-                         top: 140px;
-                         background-image: url("images/balls/Billard-Ball-3-icon.png");
-                    }
-                    #b4{
-                         left: 650px;
-                         top: 200px;
-                         background-image: url("images/balls/Billard-Ball-4-icon.png");
-                    }
-                    #b5{
-                         left: 650px;
-                         top: 260px;
-                         background-image: url("images/balls/Billard-Ball-5-icon.png");
-                    }
-                    #b6{
-                         left: 625px;
-                         top: 185px;
-                         background-image: url("images/balls/Billard-Ball-6-icon.png");
-                    }
-                    #b7{
-                         left: 600px;
-                         top: 230px;
-                         background-image: url("images/balls/Billard-Ball-7-icon.png");
-                    }
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>JQuery.throwable</title> 
+        <style>
+            #game{
+                background-color: wheat;
+                position: absolute;
+                top:0;
+                left:0;
+                right:0;
+                bottom:0;
+            }
+            #billard{
+                position:absolute;
+                left:250px;
+                top:70px;
+                height:415px;
+                width:800px;
+                background-image: url("images/green.jpg");
+                background-repeat:no-repeat;
+            }
+            #gotoGitHub{
+                top:0px;
+                right:0px;
+                position:absolute;
+                width:149px;
+                height:149px;
+                background-image: url("http://clojure-liberator.github.com/forkme_right_green_007200.png");
+            }
+            .ball{
+                position: absolute;
+                width: 29px;
+                height: 29px;
+                background-position: -1px -1px;
+                border-radius: 50%;
+            }
+            #b0{
+                left: 50px;
+                position: absolute;
+                top:200px;
+                width: 29px;
+                height: 29px;
+                background-position: -1px -1px;
+                border-radius: 50%;
+                background-color: white
+            }
+            #b1{
+                left: 550px;
+                top: 200px;
+                background-image: url("images/balls/Billard-Ball-1-icon.png");
+            }
+            #b2{
+                left: 600px;
+                top: 170px;
+                background-image: url("images/balls/Billard-Ball-2-icon.png");
+            }
+            #b3{
+                left: 650px;
+                top: 140px;
+                background-image: url("images/balls/Billard-Ball-3-icon.png");
+            }
+            #b4{
+                left: 650px;
+                top: 200px;
+                background-image: url("images/balls/Billard-Ball-4-icon.png");
+            }
+            #b5{
+                left: 650px;
+                top: 260px;
+                background-image: url("images/balls/Billard-Ball-5-icon.png");
+            }
+            #b6{
+                left: 625px;
+                top: 185px;
+                background-image: url("images/balls/Billard-Ball-6-icon.png");
+            }
+            #b7{
+                left: 600px;
+                top: 230px;
+                background-image: url("images/balls/Billard-Ball-7-icon.png");
+            }
 
-                    #b8{
-                         left: 600px;
-                         top: 200px;
-                         background-image: url("images/balls/Billard-Ball-8-icon.png");
-                    }
-                    
-                    #b9{
-                         left: 625px;
-                         top: 245px;
-                         background-image: url("images/balls/Billard-Ball-9-icon.png");
-                    }
-                    #b10{
-                         left: 625px;
-                         top: 215px;
-                         background-image: url("images/balls/Billard-Ball-10-icon.png");
-                    }
-                    #b11{
-                         left: 650px;
-                         top: 230px;
-                         background-image: url("images/balls/Billard-Ball-11-icon.png");
-                    }
-                    #b12{
-                         left: 650px;
-                         top: 170px;
-                         background-image: url("images/balls/Billard-Ball-12-icon.png");
-                    }
-                    #b13{
-                         left: 575px;
-                         top: 215px;
-                         background-image: url("images/balls/Billard-Ball-13-icon.png");
-                    }
-                    #b14{
-                         left: 575px;
-                         top: 185px;
-                         background-image: url("images/balls/Billard-Ball-14-icon.png");
-                    }
-                    #b15{
-                         left: 625px;
-                         top: 155px;
-                         background-image: url("images/balls/Billard-Ball-15-icon.png");
-                      }
+            #b8{
+                left: 600px;
+                top: 200px;
+                background-image: url("images/balls/Billard-Ball-8-icon.png");
+            }
 
-                    .hole{
-                        position: absolute;
-                        width: 30px;
-                        height: 30px;
-                        background-position: -1px -1px;
-                        border-radius: 50%;
-                        background-color: black;
-                    }
+            #b9{
+                left: 625px;
+                top: 245px;
+                background-image: url("images/balls/Billard-Ball-9-icon.png");
+            }
+            #b10{
+                left: 625px;
+                top: 215px;
+                background-image: url("images/balls/Billard-Ball-10-icon.png");
+            }
+            #b11{
+                left: 650px;
+                top: 230px;
+                background-image: url("images/balls/Billard-Ball-11-icon.png");
+            }
+            #b12{
+                left: 650px;
+                top: 170px;
+                background-image: url("images/balls/Billard-Ball-12-icon.png");
+            }
+            #b13{
+                left: 575px;
+                top: 215px;
+                background-image: url("images/balls/Billard-Ball-13-icon.png");
+            }
+            #b14{
+                left: 575px;
+                top: 185px;
+                background-image: url("images/balls/Billard-Ball-14-icon.png");
+            }
+            #b15{
+                left: 625px;
+                top: 155px;
+                background-image: url("images/balls/Billard-Ball-15-icon.png");
+            }
 
-                    #h1{
-                      left: -10px;
-                      top: -10px;
-                    }
-                    #h2{
-                      left: 390px;
-                      top: -10px;
-                    }
-                    #h3{
-                      right: -10px;
-                      top: -10px;
-                    }
-                     #h4{
-                      left: -10px;
-                      bottom: -10px;
-                    }
-                    #h5{
-                      left: 390px;
-                      bottom: -10px;
-                    }
-                    #h6{
-                      right: -10px;
-                      bottom: -10px;
-                    }
-                    
-                    .modal{
-                        position: absolute;
-                        background-color: #000000;
-                        top: 0;
-                        bottom: 0;
-                        right: 0;
-                        left: 0;
-                        z-index: 1;
-                    }
-                    
-                    .modal img{
-                        position: absolute;
-                        height: 100px;
-                        left: 45%;
-                        top:40%;
-                    }
-                    
-                    #collector{
-                        position: absolute;
-                        left:365px;
-                        top:520px;
-                        height:35px;
-                        width:600px;
-                        background-color: white;
-                        border: solid 1px;
-                        border-radius: 7px;
-                    }
-                </style>
-	</head>
-	<body>
-            <div id="game">
-                    <a id="gotoGitHub" href="https://github.com/benahm/jquery.throwable"></a>
-                    <div id="billard">
-                      <div id="b0" class="ball"></div>
-                      <div id="b1" class="ball"></div>
-                      <div id="b2" class="ball"></div>
-                      <div id="b3" class="ball"></div>
-                      <div id="b4" class="ball"></div>
-                      <div id="b5" class="ball"></div>
-                      <div id="b6" class="ball"></div>
-                      <div id="b7" class="ball"></div>
-                      <div id="b8" class="ball"></div>
-                      <div id="b9" class="ball"></div>
-                      <div id="b10" class="ball"></div>
-                      <div id="b11" class="ball"></div>
-                      <div id="b12" class="ball"></div>
-                      <div id="b13" class="ball"></div>
-                      <div id="b14" class="ball"></div>
-                      <div id="b15" class="ball"></div>
-                      <div id="h1" class="hole"></div>
-                      <div id="h2" class="hole"></div>
-                      <div id="h3" class="hole"></div>
-                      <div id="h4" class="hole"></div>
-                      <div id="h5" class="hole"></div>
-                      <div id="h6" class="hole"></div>
-                    </div>
-                    <div id="collector">
-                    </div>
-                     <div class="modal">
-                         <img src="http://www.ipv6checktest.com/images/ajax_loading.gif" alt="Loading..." />
-                     </div>
-                    <div id="stick"></div>
+            .hole{
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                background-position: -1px -1px;
+                border-radius: 50%;
+                background-color: black;
+            }
+
+            #h1{
+                left: -10px;
+                top: -10px;
+            }
+            #h2{
+                left: 390px;
+                top: -10px;
+            }
+            #h3{
+                right: -10px;
+                top: -10px;
+            }
+            #h4{
+                left: -10px;
+                bottom: -10px;
+            }
+            #h5{
+                left: 390px;
+                bottom: -10px;
+            }
+            #h6{
+                right: -10px;
+                bottom: -10px;
+            }
+
+            .modal{
+                position: absolute;
+                background-color: #000000;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                z-index: 10;
+            }
+
+            .modal img{
+                position: absolute;
+                height: 100px;
+                left: 45%;
+                top:40%;
+            }
+
+            #collector{
+                position: absolute;
+                left:365px;
+                top:520px;
+                height:35px;
+                width:600px;
+                background-color: white;
+                border: solid 1px;
+                border-radius: 7px;
+            }
+
+            #stick{
+                position: absolute;
+                display: none;
+                left: 50px;
+                top: 50px;
+                width:400px;
+                height: 6px;
+                background-color: black;
+            }
+            
+            #title{
+                position: absolute;
+                left:560px;
+                font-family: serif;
+                font-size: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game">
+            <a id="gotoGitHub" href="https://github.com/benahm/jquery.throwable"></a>
+            <div id="title"> Billard JS </div>
+            <div id="billard">
+                <div id="b0" class="ball"></div>
+                <div id="b1" class="ball"></div>
+                <div id="b2" class="ball"></div>
+                <div id="b3" class="ball"></div>
+                <div id="b4" class="ball"></div>
+                <div id="b5" class="ball"></div>
+                <div id="b6" class="ball"></div>
+                <div id="b7" class="ball"></div>
+                <div id="b8" class="ball"></div>
+                <div id="b9" class="ball"></div>
+                <div id="b10" class="ball"></div>
+                <div id="b11" class="ball"></div>
+                <div id="b12" class="ball"></div>
+                <div id="b13" class="ball"></div>
+                <div id="b14" class="ball"></div>
+                <div id="b15" class="ball"></div>
+                <div id="h1" class="hole"></div>
+                <div id="h2" class="hole"></div>
+                <div id="h3" class="hole"></div>
+                <div id="h4" class="hole"></div>
+                <div id="h5" class="hole"></div>
+                <div id="h6" class="hole"></div>
             </div>
-            <script src="javascripts/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
-            <script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
-                    <script>  $(document).ready(function () { 
-                          $(window).load(function(){
-                              $(".modal").fadeOut(1000);
-                          });
-                            
-                          //*****************************
-                          // declare variables 
-                          //*****************************
-                          var $b0=$("#b0"),
-                              $ball=$(".ball"),
-                              $billard=$("#billard"),
-                              $game=$("#game"),
-                              $collector=$("#collector"),
-                              left=$billard.position().left,
-                              top=$billard.position().top; ;
-                      
-                         //*****************************
-                         // utils Object
-                         //*****************************
-                          var utils=new function(){
-                              var forceBetween=function(x,val){
-                                  var valAbs=Math.abs(val);
-                                  if(x>valAbs) return valAbs;
-                                  if(x<-valAbs) return -valAbs;
-                                  else return x;
-                              };
-                              var maxi=function(x,y){
-                                  return Math.max(Math.abs(x),Math.abs(y));
-                              };
-                              var mini=function(x,y){
-                                  return Math.min(Math.abs(x),Math.abs(y));
-                              };
-                              return {
-                                normalize:function(x,y,val){
-                                    var xs=forceBetween(x,val),
-                                        ys=forceBetween(y,val),
-                                        max=maxi(x,y),
-                                        min=mini(x,y),
-                                        valabs=Math.abs(val);
-                                    if(max >= valabs)
-                                        return {x:valabs===Math.abs(xs)?xs:(ys*min/max),y:valabs===Math.abs(ys)?ys:(xs*min/max)};
-                                    else return {x:xs,y:ys};
-                                },
-                                arrayHolesPosition:function(x,y,width,height){
-                                    var holesArray=[];
-                                    var r=3;
-                                    //up left
-                                    holesArray.push([left,top,left+r,top+r]);
-                                    //down left
-                                    holesArray.push([left,top+height,left+r,top+height-r]);
-                                    //up center
-                                    holesArray.push([left+width/2-r/2,top,left+width/2+r/2,top+r]);
-                                    //up right
-                                    holesArray.push([left+width-r,top,left+width,top+r]);
-                                    //down center
-                                    holesArray.push([left+width/2-r/2,top+height,left+width/2+r/2,top+height-r]);
-                                    //down right
-                                    holesArray.push([left+width,top+height,left+width-r,top+height-r]);
-                                    return holesArray;
-                                },
-                                 showStick:function(x,y){
-                             
-                                 }
-                              };
-                          };
-                          
-                         
-                        var areas=utils.arrayHolesPosition(left,top,$billard.width(),$billard.height());
-                        $ball.throwable({ gravity: { x: 0, y: 0 },containment:"parent",drag:false,damping:4,areaDetection:areas });
-                        
-                         function B0(){
-                             var _this=this;
-                             this.recreateB0=function(){
-                                 $billard.append('<div id="b0" class="ball"></div>');
-                                 $b0=$("#b0");
-                                 $b0.throwable({ gravity: { x: 0, y: 0 },containment:"parent",drag:false,damping:4,areaDetection:areas});
-                                 $b0.on("mousedown",function(){
-                                     _this.mousedown.apply(this);
-                                 });
+            <div id="collector">
+            </div>
+            <div id="stick"></div>
+        </div>
+        <div class="modal">
+                <img src="http://www.ipv6checktest.com/images/ajax_loading.gif" alt="Loading..." />
+        </div>
+        <script src="javascripts/libs/jquery-1.9.0/jquery.min.js" type="text/javascript"></script> 
+        <script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
+        <script>  $(document).ready(function() {
+                $(window).load(function() {
+                    $(".modal").fadeOut(1000);
+                });
 
-                             };
-                             this.mousedown=function(){
-                              var $this=$(this);
-                                var x=$this.offset().left+$this.width()/2,
-                                    y=$this.offset().top+$this.height()/2
-                              $game.on("mousemove",function(e){
-                              });
-                              $(document).off("inarea");
-                              $(document).on("inarea",function (event,data){
-                                  var d=$(data);
-                                  if($(data)[0]===$b0[0]) setTimeout(function(){_this.recreateB0();},500);
-                                  else{
-                                    $collector.append('<div id="'+d.attr("id")+'" class="'+d.attr("class")+'" style="left:570px;top:0;"></div>');
-                                    $("#"+d.attr("id")).throwable({gravity:{x:-0.1,y:0.01},damping:5,drag:false,containment:"parent"});
-                                  }
-                                   $(data).remove();
-                              });
-                              
-                              
-                              
-                              $game.on("mouseup",function(e){
-                                  var vec2=utils.normalize(x-e.pageX,y-e.pageY,40);
-                                   $b0.throwable({impulse:{f:50,p:vec2}});
-                                  $game.off("mousemove");
-                                  $game.off("mouseup");
-                                  
-                              });
+                //*****************************
+                // declare variables 
+                //*****************************
+                var $b0 = $("#b0"),
+                        $ball = $(".ball"),
+                        $billard = $("#billard"),
+                        $game = $("#game"),
+                        $collector = $("#collector"),
+                        $stick = $("#stick"),
+                        left = $billard.position().left,
+                        top = $billard.position().top;
+                ;
+
+                //*****************************
+                // utils Object
+                //*****************************
+                var utils = new function() {
+                    var forceBetween = function(x, val) {
+                        var valAbs = Math.abs(val);
+                        if (x > valAbs)
+                            return valAbs;
+                        if (x < -valAbs)
+                            return -valAbs;
+                        else
+                            return x;
+                    };
+                    var maxi = function(x, y) {
+                        return Math.max(Math.abs(x), Math.abs(y));
+                    };
+                    var mini = function(x, y) {
+                        return Math.min(Math.abs(x), Math.abs(y));
+                    };
+                    return {
+                        normalize: function(x, y, val) {
+                            var xs = forceBetween(x, val),
+                                    ys = forceBetween(y, val),
+                                    max = maxi(x, y),
+                                    min = mini(x, y),
+                                    valabs = Math.abs(val);
+                            if (max >= valabs)
+                                return {x: valabs === Math.abs(xs) ? xs : (ys * min / max), y: valabs === Math.abs(ys) ? ys : (xs * min / max)};
+                            else
+                                return {x: xs, y: ys};
+                        },
+                        arrayHolesPosition: function(x, y, width, height) {
+                            var holesArray = [];
+                            var r = 3;
+                            //up left
+                            holesArray.push([left, top, left + r, top + r]);
+                            //down left
+                            holesArray.push([left, top + height, left + r, top + height - r]);
+                            //up center
+                            holesArray.push([left + width / 2 - r / 2, top, left + width / 2 + r / 2, top + r]);
+                            //up right
+                            holesArray.push([left + width - r, top, left + width, top + r]);
+                            //down center
+                            holesArray.push([left + width / 2 - r / 2, top + height, left + width / 2 + r / 2, top + height - r]);
+                            //down right
+                            holesArray.push([left + width, top + height, left + width - r, top + height - r]);
+                            return holesArray;
+                        },
+                        showStick: function(x, y) {
+                            if (!x && !y) {
+                                        x = this.b0Pos().x,
+                                        y = this.b0Pos().y;
+                            }
+                            $stick.show();
+                            $stick.offset({
+                                left: x,
+                                top: y
+                            });
+                        },
+                        rotateStick: function(degree) {
+                            $stick.css({
+                                "-webkit-transform": "rotate(" + degree + "deg)",
+                                "-moz-transform": "rotate(" + degree + "deg)",
+                                "-o-transform": "rotate(" + degree + "deg)",
+                                "transform": "rotate(" + degree + "deg)"
+                            });
+                        },
+                        b0Pos: function() {
+                            return {
+                                x: $b0.offset().left + $b0.width() / 2,
+                                y: $b0.offset().top + $b0.height() / 2
                             };
-                         }
-                         
-                         var b0=new B0();
-                         $b0.on("mousedown",b0.mousedown);
-                    });</script>
+                        },
+                        stick:function(x,y){
+                            var radDeg = Math.atan((x - utils.b0Pos().x) / (y - utils.b0Pos().y));
+                            var deg = -90 - 180 * radDeg / Math.PI;
 
-	</body>
+                            var  getProjectedHeight= function() {
+                                var rotationAngle = radDeg;
+                                return  $stick.width() * Math.cos(rotationAngle) + $stick.height() * Math.sin(rotationAngle);
+                            };
+                            var  getProjectedWidth= function() {
+                                var rotationAngle = radDeg;
+                                return  $stick.width() * Math.sin(rotationAngle) + $stick.height() * Math.cos(rotationAngle);
+                            };
+                            // down right
+                            if (x > utils.b0Pos().x && y > utils.b0Pos().y) {
+                                utils.showStick(x, y);
+                                utils.rotateStick(deg);
+                            }
+                            // up left
+                            if (x < utils.b0Pos().x && y < utils.b0Pos().y) {
+                                utils.showStick(x-getProjectedWidth (), y - getProjectedHeight());
+                                utils.rotateStick(deg);
+                            }
+                            // up right
+                            if (x > utils.b0Pos().x && y < utils.b0Pos().y) {
+                                utils.showStick(x, y - getProjectedHeight());
+                                utils.rotateStick(deg);
+                            }
+
+                            // down left
+                            if (x < utils.b0Pos().x && y > utils.b0Pos().y) {
+                                utils.showStick(x + getProjectedWidth(), y);
+                                utils.rotateStick(deg);
+                            }
+                        },
+                        stickHit:function(x,y){
+                            $stick.animate({
+                                left: "+="+(-x + utils.b0Pos().x),
+                                top: "+="+(-y + utils.b0Pos().y)
+                            },100);
+                        }
+                    };
+                };
+
+
+                var areas = utils.arrayHolesPosition(left, top, $billard.width(), $billard.height());
+                $ball.throwable({gravity: {x: 0, y: 0}, containment: "parent", drag: false, damping: 4, areaDetection: areas});
+                
+                // B0 Object 
+                function B0() {
+                    var _this = this;
+                    this.recreateB0 = function() {
+                        $billard.append('<div id="b0" class="ball"></div>');
+                        $b0 = $("#b0");
+                        $b0.throwable({gravity: {x: 0, y: 0}, containment: "parent", drag: false, damping: 3, areaDetection: areas});
+                        $b0.on("mousedown", function() {
+                            _this.mousedown.apply(this);
+                        });
+                    };
+                    this.mousedown = function() {
+                        $game.on("mousemove", function(e) {
+                            utils.stick(e.pageX,e.pageY);
+                        });
+
+                        $(document).off("inarea");
+                        $(document).on("inarea", function(event, data) {
+                            var d = $(data);
+                            if ($(data)[0] === $b0[0])
+                                setTimeout(function() {
+                                    _this.recreateB0();
+                                }, 500);
+                            else {
+                                $collector.append('<div id="' + d.attr("id") + '" class="' + d.attr("class") + '" style="left:570px;top:0;"></div>');
+                                $("#" + d.attr("id")).throwable({gravity: {x: -0.1, y: 0.01}, damping: 3, drag: false, containment: "parent"});
+                            }
+                            $(data).remove();
+                        });
+
+
+
+                        $game.on("mouseup", function(e) {
+                            var vec2 = utils.normalize(utils.b0Pos().x - e.pageX, utils.b0Pos().y - e.pageY, 40);
+                            $b0.throwable({impulse: {f: 40, p: vec2}});
+                            utils.stickHit(e.pageX,e.pageY);
+                            $stick.fadeOut(200);
+                            $game.off("mousemove");
+                            $game.off("mouseup");
+
+                        });
+                    };
+                }
+
+                var b0 = new B0();
+                $b0.on("mousedown", b0.mousedown);
+            });</script>
+
+    </body>
 </html>
 
