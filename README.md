@@ -30,7 +30,7 @@ $(".box2d").throwable({
                    you can specify custom containment by giving array [x1,y1,x2,y2]
     * shape: define the shape of the object by default "box" and you can specify "circle"
     * drag: boolean to specify if the object will be draggable or not, by default true
-    * impulse: you can specify un impluse to apply on the object by giving an object 
+    * impulse: you can specify an impluse to apply on the object by giving an object 
                    {
                         f: forceValue, // define the energy of the impluse (number)
                         p: pointDirection //define the direction on the impluse object like the gravity option
