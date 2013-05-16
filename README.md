@@ -36,11 +36,13 @@ $(".box2d").throwable({
                         p: pointDirection //define the direction on the impluse object like the gravity option
                    }
     * bounce: define the bounce effect of the body (value between 0 and 1) default 0, no bounce
-    * damping: define the [damping](http://en.wikipedia.org/wiki/Damping) effect value from 0 to infini, default 0 
+    * damping: define the damping(*) effect value from 0 to infini, default 0 
     * areaDetection: specify an array of areas, that when an objet enter those areas the event inarea is fired 
                    and outara event fired when exiting
     * collisionDectection : bool to activate or desactivate the collision detection 
 ```
+(*) : [damping](http://en.wikipedia.org/wiki/Damping)
+
 ## Events & Callbacks
 ```javascript
     * inarea : fired when an object enter and area specified in the option areaDetection
