@@ -67,5 +67,9 @@ $(".box2d").throwable({
 * Box2Djs : http://box2d-js.sourceforge.net/
 * JQuery-ui draggable : http://api.jqueryui.com/draggable/
 
-## More
-You can find the documentation about the plugin at [JQuery.throwable page](http://benahm.github.com/jquery.throwable/)
+## How to use it!
+You can test it by including this js link to your page
+```html
+<script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
+```
+Or download the <a href="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js">js file</a>
