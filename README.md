@@ -70,6 +70,6 @@ $(".box2d").throwable({
 ## How to use it!
 You can test it by including this js link to your page
 ```html
-<script src="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js" type="text/javascript"></script> 
+<script src="http://benahm.github.io/jquery.throwable/javascripts/jquery.throwable.js" type="text/javascript"></script> 
 ```
-Or download the <a href="https://raw.github.com/benahm/jquery.throwable/master/public_html/js/jquery.throwable.js">js file</a>
+Or download the <a href="http://benahm.github.io/jquery.throwable/javascripts/jquery.throwable.js">js file</a>
