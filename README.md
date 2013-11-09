@@ -30,7 +30,7 @@ $(".box2d").throwable({
                    "parent" the object will be contained inside the parent
                    you can specify custom containment by giving array [x1,y1,x2,y2]
 * shape: define the shape of the object by default "box" and you can specify "circle"
-* autostart: by default the effects starts at mousemove 
+* autostart: by default the effects start at mousemove 
 * drag: boolean to specify if the object will be draggable or not, by default it is true
 * impulse: you can specify an impluse to apply on the object by giving an object 
                    {
