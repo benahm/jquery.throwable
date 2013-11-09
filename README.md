@@ -15,6 +15,7 @@ $(".box2d").throwable({
                             p:{x:1,y:1}
                         },
                         shape:"circle",
+                        autostart:false,
                         bounce:0.5,
                         damping:100,
                         areaDetection:[[0,0,300,300]],
@@ -23,32 +24,33 @@ $(".box2d").throwable({
 ```
 ## Options 
 ```javascript
-    * gravity: object {x:valueX,y:valueY} 
-    * containment: define the limits where the object can be thrown 
+* gravity: object {x:valueX,y:valueY} 
+* containment: define the limits where the object can be thrown 
                    "window" is the default
                    "parent" the object will be contained inside the parent
                    you can specify custom containment by giving array [x1,y1,x2,y2]
-    * shape: define the shape of the object by default "box" and you can specify "circle"
-    * drag: boolean to specify if the object will be draggable or not, by default it is true
-    * impulse: you can specify an impluse to apply on the object by giving an object 
+* shape: define the shape of the object by default "box" and you can specify "circle"
+* autostart: by default the effects starts at mousemove 
+* drag: boolean to specify if the object will be draggable or not, by default it is true
+* impulse: you can specify an impluse to apply on the object by giving an object 
                    {
                         f: forceValue, // define the energy of the impluse (number)
                         p: pointDirection //define the direction on the impluse object like the gravity option
                    }
-    * bounce: define the bounce effect of the body (value between 0 and 1) default 0, no bounce
-    * damping: define the damping(*) effect value from 0 to infini, default 0 
-    * areaDetection: specify an array of areas, that when an objet enter those areas the event inarea is fired 
-                   and outara event fired when exiting
-    * collisionDectection : bool to activate or desactivate the collision detection 
+* bounce: define the bounce effect of the body (value between 0 and 1) default 0, no bounce
+* damping: define the damping(*) effect value from 0 to infini, default 0 
+* areaDetection: specify an array of areas, that when an objet enter those areas the event inarea is fired 
+                 and outarea event fired when exiting
+* collisionDectection : bool to activate or desactivate the collision detection 
 ```
 (*) : [damping](http://en.wikipedia.org/wiki/Damping)
 
 ## Events & Callbacks
 ```javascript
-    * inarea : fired when an object enter and area specified in the option areaDetection
-    * outarea : fired when an object exit and area specified in the option areaDetection
-    * collision : fired when a collision happened between two objects 
-    * nocollision : fired when there is no collision 
+* inarea : fired when an object enter and area specified in the option areaDetection
+* outarea : fired when an object exit and area specified in the option areaDetection
+* collision : fired when a collision happened between two objects 
+* nocollision : fired when there is no collision 
 ```
 ## Requirements
     * JQuery (of course it's a jquery plugin)
