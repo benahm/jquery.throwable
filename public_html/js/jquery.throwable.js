@@ -63,6 +63,26 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
     }
 
+    // attach the .compare method to Array's prototype to call it on any array
+    function arrayCompare(arrayA, arrayB) {
+        if (!arrayB)
+            return false;
+
+        if (arrayA.length != arrayB.length)
+            return false;
+
+        for (var i = 0; i < arrayA.length; i++) {
+            if (arrayA[i] instanceof Array && arrayB[i] instanceof Array) {
+                if (!arrayCompare(arrayA[i], arrayB[i]))
+                    return false;
+            }
+            else if (arrayA[i] != arrayB[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     function inArrays(elem,array){
         var rt=-1;
         for (var i=0;i<array.length;i++){
@@ -72,17 +92,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
         }
         return rt;
     }
-    
-    function arrayIntersect(a, b)
-    {   var rt=a,i=0;
-        while(i<rt.length){
-            if($.inArray(rt[i],b)===-1)
-                rt.splice(i,1);
-            else
-                 i++;
-        };
-        return rt;
-    };
     
     var bool = false;
     var wall_thickness = 100;
@@ -149,9 +158,9 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     
                     var body;
                     if (this.defaults.shape === "box")
-                        body=this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), $elem.width() / 2, $elem.height() / 2, false, numInstance, Math.pow(2, 50) - 1);
+                        body=this.createBox(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.outerHeight() >> 1), $elem.width() / 2, $elem.outerHeight() / 2, false, numInstance, Math.pow(2, 50) - 1);
                     else
-                        body=this.createCircle(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.height() >> 1), Math.max($elem.width() / 2, $elem.height() / 2), false, numInstance, Math.pow(2, 50) - 1);
+                        body=this.createCircle(world, $elem.position().left + ($elem.width() >> 1), $elem.position().top + ($elem.outerHeight() >> 1), Math.max($elem.width() / 2, $elem.outerHeight() / 2), false, numInstance, Math.pow(2, 50) - 1);
                     
                     if(this.defaults.impulse){
                         this.applyImpulse(body);
@@ -166,11 +175,18 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     this.bodies.push(body);
                     
                     // Clean position dependencies
-                    $("body").append($elem);
-                    $("body").css({
-                        "position":"static",
-                        "margin":0
-                    });
+                    if (this.defaults.containment === 'parent') {
+                        $elem.parent().css({
+                            "position":"static",
+                            "margin":0
+                        });
+                    } else {
+                        $("body").append($elem);
+                        $("body").css({
+                            "position":"static",
+                            "margin":0
+                        });
+                    }
                 },
                 applyOptions:function(o,i){
                         
@@ -196,9 +212,13 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         else {
                             var p = $(elements).parent();
                             if(!p.is("body")){
-                                this.stage = {X: p.offset().left, Y: p.offset().top, Width:p.offset().left+p.width(), Height:p.offset().top+ p.height()};
-                                this.defaults.containment=[p.offset().left, p.offset().top,p.offset().left+p.width(),p.offset().top+ p.height()];
+                                var area = $(elements[0]).outerHeight();
+                                this.stage = {X: p.offset().left, Y: p.offset().top, Width:p.offset().left+p.outerWidth(), Height:p.offset().top+ p.outerHeight() - area};
                             }
+
+                            $(window).resize(function() {
+                                _this.handleScrollOrResize();
+                            });
                         }
                         
                     } else {
@@ -275,16 +295,15 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                 loop: function() {
                     this.applyGravity();
 
-
                     this.delta.X += (0 - this.delta.X) * .5;
                     this.delta.Y += (0 - this.delta.Y) * .5;
 
                     if (this.defaults.drag)
                         this.mouseDrag();
+
                     world.Step(this.defaults.timeStep, this.iterations);
 
                     for (var i = 0; i < this.elements.length; i++) {
-
                         var body = this.bodies[i];
                         var element = this.elements[i];
                         var property=this.properties[i];
@@ -331,8 +350,12 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     });
                 },
                 sync: function() {
+                    this.elements.each(function(index, element) {
+                        if (!$(element).is("html *")) {
+                            this.elements.splice(index, 1);
+                        }
+                    }); 
 
-                    this.elements =arrayIntersect($(this.elements.selector),this.elements);
                     var _this = this;
                     var i = 0;
                     this.bodies = $.grep(this.bodies, function(el) {
@@ -424,16 +447,16 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                 },
                 handleScrollOrResize: function() {
                     this.getBrowserDimensions();
-                    console.log(this.numInstance + "+");
+                    //console.log(this.numInstance + "+");
                     this.setWalls(this.numInstance);
                 },
                 getProjectedWidth: function(elem) {
                     var rotationAngle = this.getRotation(elem);
-                    return  elem.width() * Math.cos(rotationAngle) + elem.height() * Math.sin(rotationAngle);
+                    return  elem.width() * Math.cos(rotationAngle) + elem.outerHeight() * Math.sin(rotationAngle);
                 },
                 getProjectedHeight: function(elem) {
                     var rotationAngle = this.getRotation(elem);
-                    return  elem.width() * Math.sin(rotationAngle) + elem.height() * Math.cos(rotationAngle);
+                    return  elem.width() * Math.sin(rotationAngle) + elem.outerHeight() * Math.cos(rotationAngle);
                 },
                 getRotation: function(obj) {
                     var matrix = obj.css("-webkit-transform") ||
@@ -625,38 +648,89 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     return {X: x, Y: y, Width: width, Height: height};
                 },
                 getBrowserDimensions: function() {
-                    if (this.defaults.containment === "window" || this.defaults.containment === "parent" /*|| this.defaults.fixed === true*/) {
+                    if (this.defaults.containment === "window") {
+                        var _this = this;
                         var changed = false;
-                        if (this.stage.X !== window.scrollX) {
 
+                        $(this.elements).each(function(index, element){
+                            var body = _this.bodies[index];
+                            var x = body.m_position.x;
+                            var y = body.m_position.y;
+
+                            if (_this.stage.Width > window.innerWidth + window.scrollX) {
+                                x = window.innerWidth + window.scrollX;
+                            }
+
+                            if (_this.stage.Height > window.innerHeight + window.scrollY) {
+                                y = window.innerHeight + window.scrollY;
+                            }
+
+                            _this.bodies[index].m_position = {x: x, y: y}
+                        });
+
+                        if (this.stage.X !== window.scrollX) {
                             this.delta.X = (window.scrollX - this.stage.X) * 50;
                             this.stage.X = window.scrollX;
                             changed = true;
                         }
 
                         if (this.stage.Y !== window.scrollY) {
-
                             this.delta.Y = (window.scrollY - this.stage.Y) * 50;
                             this.stage.Y = window.scrollY;
                             changed = true;
                         }
 
                         if (this.stage.Width !== window.innerWidth + window.scrollX) {
-
                             this.stage.Width = window.innerWidth + window.scrollX;
                             changed = true;
                         }
 
                         if (this.stage.Height !== window.innerHeight + window.scrollY) {
-
                             this.stage.Height = window.innerHeight + window.scrollY;
                             changed = true;
                         }
                         return changed;
-                    } else
-                    {
+                    } else if (this.defaults.containment === "parent") {
+                        var _this = this;
+                        var changed = false;
+                        var parent = $(this.elements).parent();
+                        var offset = parent.offset();
+
+                        $(this.elements).each(function(index, element){
+                            var body = _this.bodies[index];
+
+                            _this.bodies[index].m_position = {
+                              x: body.m_position.x + (offset.left - _this.stage.X),
+                              y: body.m_position.y + (offset.top - _this.stage.Y)
+                            }
+                        });
+
+                        if (this.stage.X !== offset.left) {
+                            this.delta.X = (offset.left - this.stage.X) * 50;
+                            this.stage.X = offset.left;
+                            changed = true;
+                        }
+
+                        if (this.stage.Y !== offset.top) {
+                            this.delta.Y = (offset.top - this.stage.Y) * 50;
+                            this.stage.Y = ofsset.top;
+                            changed = true;
+                        }
+
+                        if (this.stage.Width !== offset.left) {
+                            this.stage.Width = parent.outerWidth() + offset.left;
+                            changed = true;
+                        }
+
+                        if (this.stage.Height !== parent.outerHeight() + offset.left) {
+                            this.stage.Height = parent.outerHeight() + offset.top;
+                            changed = true;
+                        }
+
+                        return changed;
+                    } else {
                         var c = this.defaults.containment;
-                            this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
+                        this.stage = {X: c[0], Y: c[1], Width: c[2], Height: c[3]};
                     }
 
                 }
@@ -672,6 +746,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
             var _this = this;
+
             if ($("body").data('throwable.instance') === undefined) {
                 $("body").data('throwable.instance', true);
                 init();
@@ -683,19 +758,17 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
             var rt = this.each(function() {
                 var i=inArrays(this, $.throwables),
                      exist=(i!==-1);
-                if ( !exist || $.throwables[i.index].elements.selector !==_this.selector){  
-                       
+                if (!exist || !arrayCompare($.throwables[i.index].elements, _this)){  
                     if(exist){
                         $.throwables[i.index].removeElement(i.index);
                         throwableInstance.defaults = $.extend({}, throwableInstance.defaults, $.throwables[i.index].defaults);
                     }
-                    
-                        if(!isEnvSet){
-                   
-                             throwableInstance.setEnv(_this, options);
-                             isEnvSet=true;
-                        }
-                
+
+                    if(!isEnvSet){
+                         throwableInstance.setEnv(_this, options);
+                         isEnvSet=true;
+                    }
+
                     throwableInstance.initElem(this);
                 }
                 else{ 
