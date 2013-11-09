@@ -124,6 +124,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     timeStep: 1 / 40,
                     bounce: 0, // value between 0 and 1
                     containment: "window",
+                    autostart:true,
                     shape: "box", 
                     impulse:null,
                     fixed: false,
@@ -175,18 +176,11 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     this.bodies.push(body);
                     
                     // Clean position dependencies
-                    if (this.defaults.containment === 'parent') {
-                        $elem.parent().css({
+                    $("body").append($elem);
+                    $("body").css({
                             "position":"static",
                             "margin":0
-                        });
-                    } else {
-                        $("body").append($elem);
-                        $("body").css({
-                            "position":"static",
-                            "margin":0
-                        });
-                    }
+                     });
                 },
                 applyOptions:function(o,i){
                         
@@ -289,6 +283,10 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             this.defaults.gravity.y = Math.sin((Math.PI / 4) + event.beta * Math.PI / 180);
                         }
                     });
+                    if(this.defaults.autostart==true){
+                        if (!this.isRunning)
+                                this.run();
+                    }
 
                 },
                 // init function
