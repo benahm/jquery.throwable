@@ -75,3 +75,6 @@ You can test it by including this js link to your page
 <script src="http://benahm.github.io/jquery.throwable/javascripts/jquery.throwable.js" type="text/javascript"></script> 
 ```
 Or download the <a href="http://benahm.github.io/jquery.throwable/javascripts/jquery.throwable.js">js file</a>
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/benahm/jquery.throwable/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
