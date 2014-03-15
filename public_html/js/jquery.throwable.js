@@ -711,7 +711,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                         if (this.stage.Y !== offset.top) {
                             this.delta.Y = (offset.top - this.stage.Y) * 50;
-                            this.stage.Y = ofsset.top;
+                            this.stage.Y = offset.top;
                             changed = true;
                         }
 
