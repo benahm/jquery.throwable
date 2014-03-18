@@ -348,13 +348,13 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     });
                 },
                 sync: function() {
+                    var _this = this;
                     this.elements.each(function(index, element) {
                         if (!$(element).is("html *")) {
-                            this.elements.splice(index, 1);
+                            _this.elements.splice(index, 1);
                         }
                     }); 
 
-                    var _this = this;
                     var i = 0;
                     this.bodies = $.grep(this.bodies, function(el) {
                         if (el.m_userData === _this.elements[i]) {
@@ -711,7 +711,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
                         if (this.stage.Y !== offset.top) {
                             this.delta.Y = (offset.top - this.stage.Y) * 50;
-                            this.stage.Y = ofsset.top;
+                            this.stage.Y = offset.top;
                             changed = true;
                         }
 
