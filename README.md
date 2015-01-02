@@ -1,9 +1,9 @@
 JQuery.throwable
 ================
 
-JQuery plugin to make html element throwable <br>
+JQuery plugin to make HTML elements throwable <br>
 
-Create physical-like html object in your browser
+Create physical-like HTML objects in your browser
 ## Code example
 ```javascript
 $(".box2d").throwable({
