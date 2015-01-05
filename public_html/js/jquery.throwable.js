@@ -250,28 +250,28 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     });
 
                     $(document).on('touchstart', function(event) {
-                        if (event.touches.length == 1) {
+                        if (event.originalEvent.touches.length == 1) {
 
                             if (!_this.isRunning) {
                                 _this.run();
                             }
-                            _this.mouse.x = event.touches[0].pageX;
-                            _this.mouse.y = event.touches[0].pageY;
+                            _this.mouse.x = event.originalEvent.touches[0].pageX;
+                            _this.mouse.y = event.originalEvent.touches[0].pageY;
                             _this.isMouseDown = true;
                         }
                     });
                     $(document).on('touchmove', function(event) {
 
-                        if (event.touches.length == 1) {
+                        if (event.originalEvent.touches.length == 1) {
                             event.preventDefault();
-                            _this.mouse.x = event.touches[0].pageX;
-                            _this.mouse.y = event.touches[0].pageY;
+                            _this.mouse.x = event.originalEvent.touches[0].pageX;
+                            _this.mouse.y = event.originalEvent.touches[0].pageY;
                         }
 
                     });
                     $(document).on('touchend', function(event) {
 
-                        if (event.touches.length == 0) {
+                        if (event.originalEvent.touches.length == 0) {
 
                             _this.isMouseDown = false;
                         }
