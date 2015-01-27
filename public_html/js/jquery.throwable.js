@@ -435,6 +435,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                     
                     // fire "nocollision" once after the end of collision 
                     if(isCollision)  $(document).trigger("nocollision");
+                    else isCollision=false;
                 },
                 // applying gravity to objects 
                 applyGravity: function() {
