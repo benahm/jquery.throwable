@@ -63,7 +63,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
 
     }
 
-    // attach the .compare method to Array's prototype to call it on any array
+    // Attach the .compare method to Array's prototype to call it on any array
     function arrayCompare(arrayA, arrayB) {
         if (!arrayB)
             return false;
@@ -82,11 +82,12 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
         }
         return true;
     }
-
-    function inArrays(elem,array){
+    
+    // test if elem exist in array of arrays
+    function inArrays(elem,arrays){
         var rt=-1;
-        for (var i=0;i<array.length;i++){
-            rt=$.inArray(elem,array[i].elements);
+        for (var i=0;i<arrays.length;i++){
+            rt=$.inArray(elem,arrays[i].elements);
             if(rt!==-1)
                 return {index:i,value:rt};
         }
@@ -96,6 +97,8 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
     var bool = false;
     var wall_thickness = 100;
     var numInstance = 1;
+    var isCollision=false;
+    
     function throwable() {
         this.numInstance;
         this.delta = {X: 0, Y: 0};
@@ -118,6 +121,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
         
         if (!bool) {
             $.extend(throwable.prototype, {
+            	// default settings
                 defaults: {
                     infinitX: false,
                     gravity: {x: 0, y: 0},
@@ -182,6 +186,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                             "margin":0
                      });
                 },
+                // applay options again
                 applyOptions:function(o,i){
                         
                         this.defaults = $.extend({}, this.defaults, o);
@@ -315,10 +320,10 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         
                         element.style.left = (body.m_position0.x - (property.Width >> 1)) + 'px';
                         element.style.top = (body.m_position0.y - (property.Height >> 1)) + 'px';
-                        if (i === 1) {
+                        //if (i === 1) {
                             //console.log($(element).position().left -(stage.Width - properties[i].Width ))
                             //console.log(this.getProjectedHeight($(element)));
-                        }
+                        //}
                         //if($(element).position().left $(document).width()) alert("out left");
                         var style = 'rotate(' + (body.m_rotation0 * 57.2957795) + 'deg)';
 
@@ -382,7 +387,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         var elements=[];
                         for(var j=0;j<shapes.length;j++){
                             var elem=shapes[j].m_body.m_userData;
-                            if(!$.isPlainObject(elem)&&$.inArray(elem,_this.elements)!==-1){
+                            if(!$.isPlainObject(elem) && $.inArray(elem,_this.elements)!==-1){
                                 elements.push(elem);
                             }
                         }
@@ -408,19 +413,18 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                    
                     var _this=this;
                     var contactList = world.m_contactList;
-                    var noCollision=true;
                        
                     var collision=function(shape1,shape2){
                          var e1 = shape1.m_body.m_userData,
                              e2 = shape2.m_body.m_userData;
                         if (!$.isPlainObject(e1) && !$.isPlainObject(e2) ){
                             $(document).trigger("collision", [e1, e2]);
-                            noCollision=false;
+                            isCollision=true;
                         }
                     };
                     var limit=0;    
                     // loop through all collisions
-                    while (contactList && limit<100) {
+                    while (contactList && limit<100 /* <-- limit */) {
                         var shape1 = contactList.m_shape1,
                             shape2 = contactList.m_shape2;
 
@@ -429,8 +433,10 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         limit++;
                     } 
                     
-                    if(noCollision)  $(document).trigger("nocollision");
+                    // fire "nocollision" once after the end of collision 
+                    if(isCollision)  $(document).trigger("nocollision");
                 },
+                // applying gravity to objects 
                 applyGravity: function() {
                     var g = this.defaults.gravity;
                     for (var i = 0; i < this.bodies.length; i++) {
@@ -438,6 +444,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
                         this.bodies[i].ApplyForce(ant_gravity, this.bodies[i].GetCenterPosition());
                     }
                 },
+                // applying initial impulse to objects
                 applyImpulse: function(body) {
                         var f=this.defaults.impulse.f,p=this.defaults.impulse.p;
                         var ant_gravity = new b2Vec2(f * p.x * body.GetMass(), f * p.y * body.GetMass());
@@ -740,7 +747,6 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
     ;
     
     // JQuery.fn.throwable
-    
     $.fn.throwable = function(options) {
         if ($.isFunction(this.each)) {
             var _this = this;
@@ -781,7 +787,7 @@ function $A(e){if(!e)return[];if(e.toArray)return e.toArray();var t=e.length||0,
         }
     };
     
-    // array that will contient arrays
+    // array that will contain arrays
     $.throwables = [];
 
 })(jQuery, window, document);
