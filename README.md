@@ -57,7 +57,7 @@ $(".box2d").throwable({
     * JQuery (of course it's a jquery plugin)
 
 
-##Demos
+## Demos
 * Check out this simple demo here [Octocats Demo](http://benahm.github.com/jquery.throwable/octocats.html)<br>
 * Applying gravity per selection of elements [Gravity per element](http://benahm.github.com/jquery.throwable/gravityperelement.html)
 * Another demo [Slider demo](http://benahm.github.com/jquery.throwable/slider.html)<br>
